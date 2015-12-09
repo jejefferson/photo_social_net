@@ -1,0 +1,126 @@
+{% extends "basesocial.html" %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='addphoto-bar.js')}}"></script>
+{% endblock %}
+{% block menutop %}
+<div class="menu-top">
+	<ul class="tabrow">
+		<li>
+			<a href="/profile">{{_('My profile')}}</a>
+		</li>
+		{% if not nick %}
+		<li>
+			<a href="/photogallery">/ {{_('Photo galleries')}}</a>
+		</li>
+		{% else %}
+			<li>
+				{% if friend %}
+				<a href="/friends">/ {{_('Friends')}}</a>
+				{% else %}
+				<a href="/people">/ {{_('People')}}</a>
+				{% endif %}
+			</li>
+			<li>
+				<a href="/profile/{{nick}}">/ {{nick}}</a>
+			</li>
+			<li>
+				<a href="/photogallery/{{nick}}">/ {{_('Photo galleries')}}</a>
+			</li>
+		{% endif %}
+	</ul>
+</div>
+{% endblock %}
+{% block body %}
+{% if not nick %}
+<div id="addphoto-bar">
+		<h1>{{_('Add gallery')}}</h1>
+		<form name="add_gallery" action="" method="post">
+			{{form.hidden_tag()}}
+			{{_('name')}}: {{form.name(placeholder="name", autocomplete="off", autofocus=true)}}<br>
+			{{_('info')}}: {{form.info(placeholder="info", autocomplete="off")}}<br>
+			{{_('location')}}: {{form.location(placeholder="location", autocomplete="off")}}<br>
+			{{form.submit}}
+		</form>
+</div>
+<div style="clear:both; text-align: center; ">
+	<div id="switch-bar" class="triangle-down" title="{{_('create new')}}"></div>
+</div>
+{% endif %}
+<h1>{{_('Galleries')}}</h1>
+<div class="messages-box">
+	{% for gallery in galleries %}
+	<div class="foreign_message">
+		<div style="float:left; width: 30%; margin: 0px; text-align: center;">
+			<a href="/gallery/{{gallery.id}}">
+				{% if gallery.last_photo %}
+					<img style ="width: auto; height : auto; max-height: 80px; max-width: 100%;" src="{{url_for('thumbnails', filename=gallery.last_photo)}}" width="30%">
+				{% else %}
+					<img src="{{url_for('thumbnails', filename='no_such')}}" width="30%">
+				{% endif %}
+			</a>
+		</div>
+		<div>
+			<span style="font-size: 20px; color: #C40A70">{{gallery.name}}</span><br>
+			{{gallery.info}}<br>
+			{{gallery.upload_date|timezoned}}<br>
+			{{_('Shooting location')}} - {{gallery.location}}
+			{% if not nick %}
+				<form name="delete_gallery" action="/delgallery/{{gallery.id}}" method="post">
+					<input type="submit" name="delete_gallery" value="{{_('delete gallery')}}" />
+				</form>
+				{#<a href="/delgallery/{{gallery.id}}">{{_('delete gallery')}}</a>#}
+			{% endif %}
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% if pages_count %}
+{% if not nick %}
+<div>
+	{{_('Pages')}} {{page}} {{_('of')}} {{pages_count}} <br>
+	{% for p in [-5,-4,-3,-2,-1] %}
+		{% if p+page >= 0 %}
+			<a href="/photogallery?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% for p in [1,2,3,4,5] %}
+		{% if p+page <= pages_count %}
+			<a href="/photogallery?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% if pages_count > 9 %}
+		<a href="/photogallery?page={{pages_count}}">{{_('last')}}</a><br>
+	{% endif %}
+	{% if page %}
+	<a href="/photogallery?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% else %} 
+	<a class ="disabled" href="/photogallery?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% endif %}
+	<a href="/photogallery?page={{page+1}}">{{_('Forward')}}&gt;</a>
+</div>
+{% else %}
+<div>
+	{{_('Pages')}} {{page}} {{_('of')}} {{pages_count}} <br>
+	{% for p in [-5,-4,-3,-2,-1] %}
+		{% if p+page >= 0 %}
+			<a href="/photogallery/{{nick}}?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% for p in [1,2,3,4,5] %}
+		{% if p+page <= pages_count %}
+			<a href="/photogallery/{{nick}}?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% if pages_count > 9 %}
+		<a href="/photogallery/{{nick}}?page={{pages_count}}">{{_('last')}}</a><br>
+	{% endif %}
+	{% if page %}
+	<a href="/photogallery/{{nick}}?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% else %} 
+	<a class ="disabled" href="/photogallery/{{nick}}?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% endif %}
+	<a href="/photogallery/{{nick}}?page={{page+1}}">{{_('Forward')}}&gt;</a>
+</div>
+{% endif %}
+{% endif %}
+{% endblock %}

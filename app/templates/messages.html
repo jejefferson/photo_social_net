@@ -1,0 +1,110 @@
+{% extends "basesocial.html" %}
+{% block script %}
+<script type="text/javascript" src="{{url_for('static', filename='load_messages.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='jquery-ui.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='comments.js') }}"></script>
+{% endblock %}
+{% block menutop %}
+<div class="menu-top">
+	<ul class="tabrow">
+		<li>
+			<a href="/profile">{{_('My profile')}}</a>
+		</li>
+		<li>
+			<a href="/messages">/ {{_('Messages')}}</a>
+		</li>
+		{% if private %}
+		<li>
+			<a href="/messages/{{friend}}">/ {{_('Conversation with')}} {{friend}}</a>
+		</li>
+		{% endif %}
+	</ul>
+</div>
+{% endblock %}
+{% block body %}
+<br>
+<div id="sign">
+	{% if not private %}
+	<h2>{{_('All your messages')}}</h2>
+	{% else %}
+	<h2>{{_('Private conversation with')}} {{friend}}</h2>
+		{% if online %}
+			<span style="color: green">{{_('Online')}}</span>
+		{% else %}
+			<span style="color: red">{{_('Offline')}}</span>
+		{% endif %}
+	{% endif %}
+	<h3>{{_('Sending message')}}</h3>
+	<form name="send_message" action="" method="post" enctype="multipart/form-data">
+		{{form.hidden_tag()}}
+		<table>
+			{% if not private %}<tr><td>{{_('to')}}</td><td>{{form.message_dest}}</td></tr>{% endif %}
+			<tr><td>{{_('message body')}}</td><td>{{form.message_body(autocomplete="off", cols="40", rows="3", onkeydown="if (event.keyCode == 13 && !event.shiftKey) document.getElementById('submit').click()")}}</td></tr>
+		</table>
+		{{form.submit}} {{form.message_file(multiple = True)}}
+	</form>
+	<div id="progressbar_wrap">
+		<div id="progressbar">
+			<div class="progress-label">loading</div>
+		</div>
+	</div>
+	{% if not private %}
+	<h3>{{_('Your messages')}}</h3>
+	{% else %}
+	<h3>{{_('Conversation')}}</h3>
+	{% endif %}
+	<div class="private_messages-box">
+		{% include "message.html" %}
+	</div>
+</div>
+{% if not friend %}
+<div>
+	{{_('Pages')}} {{page}} {{_('of')}} {{pages_count}} <br>
+	{% for p in [-5,-4,-3,-2,-1] %}
+		{% if p+page >= 0 %}
+			<a href="/messages?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	<span style="background: #5CA1E0">{{page}}</span>
+	{% for p in [1,2,3,4,5] %}
+		{% if p+page <= pages_count %}
+			<a href="/messages?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% if pages_count > 9 %}
+		<a href="/messages?page={{pages_count}}">{{_('last')}}</a><br>
+	{% endif %}
+	{% if page %}
+	<a href="/messages?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% else %} 
+	<a class ="disabled" href="/messages?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% endif %}
+	<a href="/messages?page={{page+1}}">{{_('Forward')}}&gt;</a>
+</div>
+{% else %}
+<div>
+	{{_('Pages')}} {{page}} {{_('of')}} {{pages_count}} <br>
+	{% for p in [-5,-4,-3,-2,-1] %}
+		{% if p+page >= 0 %}
+			<a href="/messages/{{friend}}?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	<span style="background: #5CA1E0">{{page}}</span>
+	{% for p in [1,2,3,4,5] %}
+		{% if p+page <= pages_count %}
+			<a href="/messages/{{friend}}?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% if pages_count > 9 %}
+		<a href="/messages/{{friend}}?page={{pages_count}}">{{_('last')}}</a><br>
+	{% endif %}
+	{% if page %}
+	<a href="/messages/{{friend}}?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% else %} 
+	<a class ="disabled" href="/messages/{{friend}}?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% endif %}
+	<a href="/messages/{{friend}}?page={{page+1}}">{{_('Forward')}}&gt;</a>
+</div>
+{% endif %}
+{% endblock %}
+

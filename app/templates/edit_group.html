@@ -1,0 +1,51 @@
+{% extends "basesocial.html" %}
+{% block menutop %}
+<div class="menu-top">
+	<ul class="tabrow">
+		<li>
+			<a href="/profile">{{_('My profile')}}</a>
+		</li>
+		<li>
+			<a href="/groups">{{_('Groups')}}</a>
+		</li>
+		<li>
+			<a href="/group/{{group.name}}">{{group.name}}</a>
+		</li>
+		<li>
+			<a href="/edit_group/{{group.name}}">/ {{_('Edit group')}}</a>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+{% block body %}
+<form action="" method="post" name="update_group" enctype="multipart/form-data">
+	{{form.hidden_tag()}}
+	<br>
+	<div id="login">
+		<div style="float: left; width: 50%;">
+			<h3>{{_('General data')}}</h3>
+			<table>
+				<tr><td>{{_('Descriptioin')}}:</td><td>{{form.description(autocomplete="off")}}</td></tr>
+				<tr><td>{{_('Picture')}}:</td><td>{{form.pic}}</td></tr>
+			</table>
+			<h3>{{_('Subscriptions')}}</h3>
+				{{_('Tags')}}: {{form.tags}}
+		</div>
+	<div style="position: relative; float:left;width: 45%; top: 0px;">
+		<div style="width: 30%; padding: 5px; margin: 20px; margin-left:40px; border: 10px; border-color: red;">
+			{% if group.pic %}
+			<img src={{url_for('thumbnails', filename=group.pic)}} width="100%" height="100%">
+			{% else %}
+			<img src={{url_for('static', filename='anon.jpg')}} width="100%" height="100%">
+			{% endif %}
+			{{_('Load user picture:')}} {{form.pic}}
+		</div>
+	</div>
+	<div style="clear:both;"></div>
+		<h2>{{_('Update group')}}: {{form.submit}}</h2>
+	</div>
+</form>
+<form action="/delgroup/{{group.name}}" method="post" name="delgroup">
+			delete group and all data <input type="submit" name="del" value={{_('delete group')}} />
+		</form>
+{% endblock %}

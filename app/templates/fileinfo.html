@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Summary info about file</h1>
+<span id="sign">
+<div>
+	{% if is_image %}
+	<div style="width: 30%; margin: 20px; float: left;">
+		<img src="{{url_for('thumbnails', filename=file.filename)}}" height="100%" width="100%" alt="preview your file">
+	</div>
+	{% endif %}
+<div style="position: relative; margin: 10px; overflow: auto;">
+	<p>Filename:<br>{{file.filename}}</p>
+	<p>Uploaded at: {{file.upload_data|timezoned}}</p>
+	<p>Upload by user: {{file.file_author}}</p>
+	<p>File size: {{size}}</p>
+	<form action="" name="delfile" method="get">Delete this file
+		<input type="submit" name="delfile" value="delete">
+</div>
+</span>
+{% endblock %}

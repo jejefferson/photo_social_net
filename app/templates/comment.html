@@ -1,0 +1,85 @@
+<a name="{{comment.msg_id}}"></a>
+<div class="comment {{'parent_' ~ comment.parent_id}}" id={{'comment_' ~ comment.msg_id}}>
+	{% with message_author_is_nickname = (comment.msg_author == nickname or comment.parent.msg_author == nickname) %}
+	<div style="float:left; width: 5%; margin: 5px; text-align: center; word-wrap: break-word;">
+		<a href="/profile/{{comment.msg_author}}"><img src="{{url_for('thumbnails', filename=comment.user.user_pic)}}" width="100%"></a>
+	</div>
+	<div style="margin 5px; margin-top: 7px">
+		<div style="float: left; width: 75%">
+			<span style="font-size: 90%">{{comment.msg_author}}</span> <span style="font-size: 70%">{{_('wrote')}}</span>
+			<div style="display: inline">
+				<span style="font-size: 70%">{{comment.timestamp|timezoned}}</span>
+				<a align="left" id="anchor" href="#{{comment.msg_id}}">#{{comment.msg_id}}</a>
+				<button id="copy-button_{{comment.msg_id}}" title="{{_('copy link to comment')}}" style="background-color:transparent; border-color:transparent;"><img src="{{url_for('static', filename='link.png')}}"></button>
+			</div>
+		</div>
+		{% if message_author_is_nickname or not nick %}	
+			<div style="text-align: right">
+				{% if message_author_is_nickname %}
+					<button id="addition-button" title="{{_('edit message')}}" style="background-color:transparent; border-color:transparent;"><img src="{{url_for('static', filename='edit.png')}}"></button>
+				{% endif %}
+				<form style="margin: 0; margin-right: 15px; padding: 0; display: inline" action="/delmessage/{{comment.msg_id}}" method="post" name="delete">
+					<input title="{{_('Remove comment')}}" style="display: inline" id="delete" name="delete" type="image" src="{{url_for('static', filename='delete.png')}}" value="{{_('delete')}}"></form>
+				</form>
+			</div>
+		{% else %}
+		<br>
+		{% endif %}
+		<hr>
+		<div class="message_body more">{{comment.body}}</div>
+		<hr>
+	</div>
+	<div>
+		{% with attachments = comment.attachments_subqueryload %}
+			{% if attachments %}
+				{% for attachment in attachments %}
+					{% if not attachment.filename|file_is_image %}
+						<a href={{url_for('upload', filename = attachment.filename)}}>{{attachment.filename.split('_',2)[2]}}</a>
+						{% if message_author_is_nickname %}
+							<form style="display:inline" name="delete_file" action="/delfile/{{attachment.file_id}}" method="post">
+								<input type="image" src="{{url_for('static', filename='delete.png')}}" name="delete_file" value="{{_('delete')}}" />
+							</form>
+						{% endif %}
+						<br>
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+			<div style="clear:both;"></div>
+			{% if attachments %}
+				{% set count = 0 %}
+					{% for attachment in attachments %}
+						{% if attachment.filename|file_is_image %}
+							{% if (loop.index-1) % 5 == 0 %}
+								<div style="clear:both;"></div>
+							{% endif %}
+							<div style="width: 20%; float:left; text-align: center; height: 100%;">
+								<a href="/search_images/virtual_gallery/message/{{comment.msg_id}}/{{count}}">
+									<img src="{{url_for('thumbnails', filename = attachment.filename)}}" width="90%">
+								</a>
+							</div>
+							{% set count = count + 1 %}
+						{% endif %}
+					{% endfor %}
+					<div style="clear:both;"></div>
+				{% endif %}
+			</div>				
+		{% endwith %}
+		{% if message_author_is_nickname %}
+			{#<button id="addition-button" title="{{_('edit message')}}" style="background-color:transparent; border-color:transparent;"><img src="{{url_for('static', filename='edit.png')}}"></button>#}
+			<div class="addition">
+				<form name="add_file_to_message" action="/addfile_to_message/{{comment.msg_id}}" method="post" enctype="multipart/form-data">
+					<p style="text-align: left; color: #000000; font-size: 65%; line-height: 0px;">{{_('Add files')}}</p><p><input style="display: inline;margin:0; padding:0;" type="file" name="new_file" multiple />
+						<input style="display: inline; margin:0; padding:0;" type="submit" name="add_file" value="{{_('Send')}}" />
+					</p>
+				</form>							
+			</div>
+		{% endif %}
+		<div style="clear:both"></div>
+		<div style="text-align: right">
+			<button id="reply-button_{{comment.msg_id}}">{{_('reply')}}</button>	
+		</div>
+		<div style="clear:both">
+			<a id="replyto_{{comment.msg_id}}" href="#{{comment.reply_to}}"><span style="font-size: 80%">{{_('In reply to')}}: #{{comment.reply_to}}</span></a>
+		</div>
+	{% endwith %}
+</div>

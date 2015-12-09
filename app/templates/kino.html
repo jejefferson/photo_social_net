@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+		  {% block content %}
+		  <h1>{{_('Schedule Megafilm 45 Kurgan')}}</h1>
+		  <br>
+		  <h2>{{_('Update at')}}: {{last_req|timezoned}}</h2>
+		  <br>
+		  <table class="gradienttable" border="1">
+			  {% for film in films %}
+			  <tr><th>{{film}}</th>
+				  {% for time in times[film] %}
+				  <td>{{time}}</td>
+				  {% endfor %}
+				  </tr>
+				  {% else %}
+				  <p>broken template</p>
+				  {% endfor %}
+			</table>
+			{% endblock %}
+			

@@ -1,0 +1,181 @@
+{% for message in messages %}
+	{% with message_author = (message.msg_author == nickname) %}
+	{% with comments = message.comments %}
+			{% if blog %}
+			<div>
+				<a name="{{message.msg_id}}"></a>	
+				<div class="message" id={{'comment_' ~ message.msg_id}}>
+			{% elif message_author %}
+			<div align="left">
+				<a name="{{message.msg_id}}"></a>	
+				<div class="my_message" id={{'comment_' ~ message.msg_id}}>
+			{% else %}	
+			<div align="right">
+				<a name="{{message.msg_id}}"></a>	
+				<div class="foreign_message" id={{'comment_' ~ message.msg_id}}>
+			{% endif %}		
+						<div style="float:left; width: 5%; margin: 5px; text-align: center; word-wrap: break-word;">
+							{% if blog %}
+							<a href="/profile/{{message.msg_author}}"><img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%"></a>
+							{% elif message_author %}
+							<img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%">
+							{% elif private %}
+							<a href="/profile/{{message.msg_author}}"><img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%"></a>
+							{% else %}
+							<a href="/messages/{{message.msg_author}}"><img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%"></a>
+							{% endif %}
+						</div>
+						<div style="margin 5px; margin-top: 7px">
+							<div>
+								{% if not blog %}
+								<div style="float: left; width: 75%">
+									<span style="font-size: 90%">{{message.msg_author}}</span> <span style="font-size: 70%">{{_('wrote')}} {{message.msg_dest}}</span>
+									<div style="display: inline">
+										<span style="font-size: 70%">{{message.timestamp|timezoned}}</span>
+										<a align="left" href="#{{message.msg_id}}">#{{message.msg_id}}</a>
+									</div>
+									{% else %}
+									<div style="float: left; width: 75%">
+									<span style="font-size: 90%">{{message.msg_author}}</span> <span style="font-size: 70%">{{_('wrote')}}</span>
+									<div style="display: inline">
+										<span style="font-size: 70%">{{message.timestamp|timezoned}}</span>
+										<a align="left" id="anchor" href="#{{message.msg_id}}">#{{message.msg_id}}</a>
+										<button id="copy-button_{{message.msg_id}}" title="{{_('copy link to message')}}" style="background-color:transparent; border-color:transparent;"><img src="{{url_for('static', filename='link.png')}}"></button>
+									</div>
+										{% with tags = message.tags %}
+											{% if tags %}
+											<br>
+												{% if not nick %}
+													{% for tag in tags %}
+														<a class="button-tag" href="/profile?tag={{tag.entity}}">{{tag.entity}}</a>
+													{% endfor %}
+												{% else %}
+													{% for tag in tags %}
+														<a class="button-tag" href="/profile/{{nick}}?tag={{tag.entity}}">{{tag.entity}}</a>
+													{% endfor %}
+												{% endif %}
+											<br>
+											{% endif %}
+										{% endwith %}
+									{% endif %}
+								</div>
+								{% if message_author or not nick %}	
+									<div style="text-align: right">
+										{% if message_author %}
+											<button id="addition-button" title="{{_('edit message')}}" style="background-color:transparent; border-color:transparent;">
+												<img src="{{url_for('static', filename='edit.png')}}">
+											</button>
+										{% endif %}
+										<form style="margin: 0; margin-right: 15px; padding: 0; display: inline" action="/delmessage/{{message.msg_id}}" method="post" name="delete">
+											<input title="{{_('Remove message')}}" id="delete" name="delete" type="image" src="{{url_for('static', filename='delete.png')}}" value="{{_('delete')}}">
+										</form>
+									</div>
+								{% endif %}
+							</div>
+							<div style="clear:both"></div>
+							<hr>
+							<div class="message_body more">{{message.body}}</div>
+							<hr>
+						</div>
+						<div>
+						{% if message.attachment %} {# legacy #}
+							{% if message.attachment|file_is_image %}
+								<a href={{url_for('upload', filename = message.attachment)}}>
+									<img src="{{url_for('thumbnails', filename = message.attachment)}}" width="90%">
+								</a>
+							{% else %}
+								<a href={{url_for('upload', filename = message.attachment)}}>{{message.attachment}}</a>
+							{% endif %}
+						{% endif %}
+						{% with attachments = message.attachments_subqueryload %}
+							{% if attachments %}
+								<p style="text-align: left; color: #000000; font-size: 65%; line-height: 0px; margin-bottom: 20px;">
+									{{_('Attachments')}}
+								</p>
+								{% for attachment in attachments %}
+									{% if not attachment.filename|file_is_image %}
+										{% if attachment.filename|file_is_audio %}
+											<p style="font-size: 70%; line-height: 0%;">{{attachment.filename.split('_',2)[2]}}</p>
+											<audio controls>
+												<source src="{{url_for('upload', filename = attachment.filename)}}" type="{{attachment.mimetype}}">
+												Your browser does not support the audio element.
+											</audio>
+											<br>
+										{% else %}
+											<a href={{url_for('upload', filename = attachment.filename)}}>{{attachment.filename.split('_',2)[2]}}</a>
+											{% if message_author %}
+												<form style="display:inline" name="delete_file" action="/delfile/{{attachment.file_id}}" method="post">
+													<input type="image" title="{{_('delete file')}}" src="{{url_for('static', filename='delete.png')}}" name="delete_file" value="{{_('delete')}}" />
+												</form>
+											{% endif %}
+											<br>
+										{% endif %}
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+							<div style="clear:both;"></div>
+							{% if attachments %}
+								{% set count = 0 %}
+								{% for attachment in attachments %}
+									{% if attachment.filename|file_is_image %}
+										{% if (loop.index-1) % 5 == 0 %}
+											<div style="clear:both;"></div>
+										{% endif %}
+										<div style="width: 20%; float:left; text-align: center; height: 100%;">
+											<a href="/search_images/virtual_gallery/message/{{message.msg_id}}/{{count}}">
+												<img src="{{url_for('thumbnails', filename = attachment.filename)}}" width="90%">
+											</a>
+										</div>
+									{% set count = count + 1 %}
+									{% endif %}
+								{% endfor %}
+								<div style="clear:both;"></div>
+							{% endif %}
+							{% endwith %}
+						</div>
+					{% if message_author %}
+						<div class="addition">
+							<form name="add_file_to_message" action="/addfile_to_message/{{message.msg_id}}" method="post" enctype="multipart/form-data">
+								<p style="text-align: left; color: #000000; font-size: 65%; line-height: 0px;">{{_('Add files')}}</p><p><input style="display: inline;margin:0; padding:0;" type="file" name="new_file" multiple />
+									<input style="display: inline; margin:0; padding:0;" type="submit" name="add_file" value="{{_('Send')}}" />
+								</p>
+							</form>							
+						</div>
+					{% endif %}
+					{% if blog %}
+						<div style="clear: both;text-align: right">
+							{{_('Comments count')}}: <span id="com_count">{{comments|count}}</span>&nbsp;&nbsp;
+							<button id={{"switch-bar_" ~ message.msg_id}} title="{{_('show/hide comments')}}" style="background-color:transparent; border-color:transparent;">
+								<img src="{{url_for('static', filename='show.png')}}">
+							</button>
+							<button id="reply-button_{{message.msg_id}}">{{_('reply')}}</button>	
+						</div>							
+					{% endif %}
+				</div>
+				{% if blog %}
+				<div id={{"comments_" ~ message.msg_id}}>
+					{% if comments %}
+						{% for comment in comments %}
+							{% include "comment.html" %}
+						{% endfor %}
+					{% endif %}
+				</div>
+				{% endif %}
+				{% if blog and not ajax%}
+					<div class="comment-form" id="add_comment_form" align="right">
+						<div align="left">{{_('Leave a comment')}}</div>
+						{% if nick %}
+						<form name="add_comment" action="/profile/add_comment/{{message.msg_id}}/{{nick}}" method="post" enctype="multipart/form-data">
+						{% else %}
+						<form name="add_comment" action="/profile/add_comment/{{message.msg_id}}/{{nickname}}" method="post" enctype="multipart/form-data">
+						{% endif %}
+							{{form2.hidden_tag()}}
+							{{form2.comment_message_body(rows="2", style="width: 90%;", placeholder="#id Your message.", onkeydown="if (event.keyCode == 13 && !event.shiftKey) $(this).parent().find('#form2-comment_submit').click()")}}<br>
+							{{form2.comment_submit(title=gettext('Send files to server'))}} {{form2.comment_message_file(multiple=True, title=gettext('You may select one or several files for upload'))}}
+						</form>
+					</div>
+				{% endif %}
+			</div>
+		{% endwith %}
+		{% endwith %}
+	{% endfor %}

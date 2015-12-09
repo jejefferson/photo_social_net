@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='testajax.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='focus.js') }}"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+{% endblock %}
+{% block content %}
+<h1>{{_("Multi user chat")}}</h1><br>
+	<div>
+		<div class="textfield" id="textfield">
+			{% for message in messages %}
+			<span id="message">[{{message.timestamp}}]<font color="#9C0064">&lt;{{message.msg_author}}&gt;</font><span style="white-space: pre-wrap">{{message.body+'\n'}}</span><span style="display: none;" id="msg_id">|{{message.msg_id}}</span></span>
+			{% endfor %}
+		</div>
+		<div class="onlinelisttitle"><h2 align="center">{{_('Online users:')}} ({{online_users|length}} {{_('total')}}</h2></div>
+		<div class="onlinelist">
+			{% for user in online_users %}
+			<li style="color: #0EB80E;">{{user}}</li>
+			{% endfor %}
+		</div>
+		<form action="" method="post" name="login">
+			{{form.hidden_tag()}}
+			<div>
+				<div class="sendstring">
+					<p id="login">{{_('Your message:')}}<br>{{form.message(cols="80", rows="3", autocomplete="off", autofocus=true, onkeydown="if (event.keyCode == 13 && !event.shiftKey) document.getElementById('submitbutton').click()")}}
+					<input type="image" src="{{url_for('static', filename='key_Enter.png')}}" name="submit" value="Pssst" class="submitbutton" id="submitbutton"/>
+				</div>
+				
+			</div>
+		</form>
+	</div>
+{% endblock %}

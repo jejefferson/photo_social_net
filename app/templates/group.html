@@ -1,0 +1,152 @@
+{% extends "basesocial.html" %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='jquery-ui.min.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='comments.js')}}"></script>
+{% endblock %}
+{% block menutop %}
+<div class="menu-top">
+	<ul class="tabrow">
+		<li>
+			<a href="/profile">{{_('My profile')}}</a>
+		</li>
+		<li>
+			<a href="/groups">/ {{_('Groups')}}</a>
+		</li>
+		<li>
+			<a href="/group/{{group.name}}">/ {{group.name}}</a>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+{% block body %}
+<br>
+<div id="login">
+	<div style="float: left; width: 55%; min-width: 400px;">
+		<h1>{{group.name}}</h1>
+		<h3>{{_('Description')}}</h3>
+		<p>{{group.description}}</p>
+		<p>{{_('Group subscribed on tags')}}:
+			{% for tag in group.tags%}
+				{{tag.entity}}&nbsp;
+			{% endfor %}
+			</p>
+		{% if owner %}
+			<a href="/edit_group/{{group.name}}">{{_('Edit group')}}</a>
+		{% endif %}
+		<h3>{{_('Blog')}}</h3>
+		<form name="blog" action="" method="post" enctype="multipart/form-data">
+			{{form.hidden_tag()}}
+			{{_('Add post')}}<br>{{form.message_body(rows="2", style="width: 70%;", placeholder="#tag1 #tag2 Your message.", onkeydown="if (event.keyCode == 13 && !event.shiftKey) document.getElementById('form-submit').click()")}}<br>
+			{{_("Group's message")}}{{form.owners_message}}
+			{{form.submit(title=gettext('Send files to server'))}} {{form.message_file(multiple="multiple", title=gettext('You may select one or several files for upload'))}}
+		</form>
+		<div id="progressbar_wrap">
+			<div id="progressbar">
+				<div class="progress-label">loading</div>
+			</div>
+		</div>
+		<div class="messages-box">
+		{% include "message.html" %}
+		</div>
+		
+	</div>
+	<div style="position: relative; float:left;width: 40%; min-width: 200px;top: 0px;">
+		<div style="width: 30%; padding: 5px; margin: 20px; margin-left:35%; box-shadow: 0 0 20px rgba(64,5,42,6);" >
+			<a href="{{url_for('upload', filename=group.pic)}}"><img src="{{url_for('thumbnails', filename=group.pic)}}" width="100%" height="100%"></a>
+		</div>
+		{% if subscription %}
+			<form name="unsub_group" action="/unsub_group/{{group.name}}" method="post">
+				<input type="submit" name="unsub" value="{{_('Unsubscribe')}}" />
+			</form>
+		{% else %}
+			<form name="sub_group" action="/sub_group/{{group.name}}" method="post">
+				<input type="submit" name="sub" value="{{_('Subscribe')}}" />
+			</form>
+		{% endif %}
+		<h3>{{_('General data')}}</h3>
+		<table>
+			<tr><td>{{_('Created')}}:</td><td>{{group.date_create}}</td></tr>
+			<tr><td>{{_('Owner')}}:</td><td>{{group.owner}}</td></tr>
+		</table>
+		<h3>{{_('Members')}} ({{_('Total')}} {{members|length}}):</h3>
+			{% for member in members %}
+				{% if (loop.index-1) % 3 == 0 %}
+					<div style="clear:both;"></div>
+				{% endif %}
+				<div style="float: left; width: 30%; margin: 0px; text-align: center;">
+					<a href="/profile/{{member.nickname}}">
+						<img style ="width: auto; height : auto; max-height: 80px; max-width: 100%;" src="{{url_for('thumbnails', filename=member.user_pic)}}" width="30%">
+					</a>
+					<p style="text-align: center;">{{member.nickname}}</p>
+				</div>
+			{% endfor %}
+			<div style="clear:both;"></div>
+	</div>
+	<div style="clear:both;"></div>
+</div>
+{#
+{% if pages_count %}
+{% if not nick %}
+<div>
+	{{_('Pages')}} {{page}} {{_('of')}} {{pages_count}} <br>
+	{% for p in [-5,-4,-3,-2,-1] %}
+		{% if p+page >= 0 %}
+			<a href="/profile?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	<span style="background: #5CA1E0">{{page}}</span>
+	{% for p in [1,2,3,4,5] %}
+		{% if p+page <= pages_count %}
+			<a href="/profile?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% if pages_count > 9 %}
+		<a href="/profile?page={{pages_count}}">{{_('last')}}</a><br>
+	{% endif %}
+	{% if page %}
+	<a href="/profile?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% else %} 
+	<a class ="disabled" href="/profile?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% endif %}
+	<a href="/profile?page={{page+1}}">{{_('Forward')}}&gt;</a>
+</div>
+{% else %}
+<div>
+	{{_('Pages')}} {{page}} {{_('of')}} {{pages_count}} <br>
+	{% for p in [-5,-4,-3,-2,-1] %}
+		{% if p+page >= 0 %}
+			<a href="/profile/{{nick}}?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	<span style="background: #5CA1E0">{{page}}</span>
+	{% for p in [1,2,3,4,5] %}
+		{% if p+page <= pages_count %}
+			<a href="/profile/{{nick}}?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	<br>
+	{% if pages_count > 9 %}
+		<a href="/profile/{{nick}}?page={{pages_count}}">{{_('last')}}</a><br>
+	{% endif %}
+	{% if page %}
+	<a href="/profile/{{nick}}?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% else %} 
+	<a class ="disabled" href="/profile/{{nick}}?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% endif %}
+	<a href="/profile/{{nick}}?page={{page+1}}">{{_('Forward')}}&gt;</a>
+</div>
+{% endif %}
+{% endif %}
+<script type="bogus" id="add_comment_prototype">
+	<div class="comment-form" id="add_comment_form" align="right" style="display: block;">
+	<div align="left">Добавить комментарий</div>
+	<form name="add_comment" action="/profile/add_comment/610/pixie" method="post" enctype="multipart/form-data">
+		<textarea id="form2-comment_message_body" name="form2-comment_message_body" onkeydown="if (event.keyCode == 13 &amp;&amp; !event.shiftKey) $(this).parent().find('#form2-comment_submit').click()" placeholder="#id Your message." rows="2" style="width: 90%;">
+		</textarea><br>
+		<input id="form2-comment_submit" name="form2-comment_submit" title="Отправить файлы на сервер" type="submit" value="Send">
+		<input id="form2-comment_message_file" multiple="" name="form2-comment_message_file" title="Можно выбрать один или несколько файлов" type="file">
+	</form>
+</div>
+</script>
+#}
+{% endblock %}

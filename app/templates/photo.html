@@ -1,0 +1,87 @@
+{% extends "basesocial.html" %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='photo_navigation.js')}}"></script>
+{% endblock %}
+{% block menutop %}
+<div class="menu-top">
+	<ul class="tabrow">
+		<li>
+			<a href="/profile">{{_('My profile')}}</a>
+		</li>
+		{% if not guest %}
+		<li>
+			<a href="/photogallery">/ {{_('Your photo galleries')}}</a>
+		</li>
+		{% else %}
+			<li>
+			{% if friend %}
+				<a href="/friends">/ {{_('Friends')}}</a>
+			{% else %}
+				<a href="/people">/ {{_('People')}}</a>
+			{% endif %}
+			</li>
+			<li>
+				<a href="/profile/{{gallery.author}}">/ {{gallery.author}}</a>
+			</li>
+			<li>
+				<a href="/photogallery/{{gallery.author}}">/ {{_('Photo galleries')}}</a>
+			</li>
+		{% endif %}
+		<li>
+			<a href="/gallery/{{gallery.id}}">/ {{gallery.name}}</a>
+		</li>
+		<li>
+			<a href="/gallery/{{gallery.id}}/{{photonum}}">/ {{photo.filename.split('_', 2)[2]}}</a>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+{% block body %}
+<br>
+<div style="margin-left: 5%; width: 90%;">
+	<a id="left" href="/gallery/{{gallery.id}}/{{photonum-1}}">
+		{#<div style="width:5%;float:left; background: #2583D2; height: 200px;opacity: 0.4;">#}
+		<div class="arrow-left" title="{{_('back')}}">
+		</div>
+	</a>
+	<div style="float: left; width: 80%; margin-left: 5%; text-align: center;">
+		<a href="{{url_for('upload', filename = photo.filename)}}">
+			<img id="image" style ="width: auto; height : auto; max-height: 600px; max-width: 100%;" src="{{url_for('upload', filename = photo.filename)}}" width="100%">
+		</a>
+	</div>
+	<a id="right" href="/gallery/{{gallery.id}}/{{photonum+1}}">
+		{# <div style="width:5%;float:left; margin-left: 5%; background: #2583D2; height: 200px;opacity: 0.4;"> #}
+		<div class="arrow-right" title="{{_('forward')}}">
+		</div>
+	</a>
+</div>
+
+<div style="clear:both; margin-left: 5%; text-align: center;">
+	<span id="label">
+	{% if photo.name %}
+		{{photo.name}}
+	{% else %}
+		{{photo.filename.split('_', 2)[2]}}
+	{% endif %}
+	</span>
+	<br>
+	<div style="display: none" id="tags"></div>
+	{% if photo.tags.all() %}
+		{% for tag in photo.tags.all() %}
+			<a class="button-tag" href="/gallery/{{gallery.id}}?tag={{tag.entity}}">{{tag.entity}}</a>
+		{% endfor %}
+	{% endif %}
+{% if not guest %}
+<p id="gallery_id" style="display: none">{{gallery.id}}</p>
+<p id="photo_id" style="display: none">{{photo.file_id}}</p>
+<div id="edit_bar">
+	<form id="edit_form" name="edit_name" action="/ajax/get_photo_name" method="post">
+		<input id="photo_name" type="text" name="photo_name" value="" placeholder="#tag1 tag2 Photo name." />
+		<input id="save" type="submit" name="submit" value="{{_('save')}}" />
+	</form>
+</div>
+<div id="switch-bar" class="triangle-down" title="{{_('edit name')}}"></div>
+{% endif %}
+</div>
+{% include "photo_above.html" %}
+{% endblock %}

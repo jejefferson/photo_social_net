@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{_('Hello, again')}} (=</h1>
+<div class="sign_field">
+	<form action="" method="post" name="login">
+	{{form.hidden_tag()}}
+	<div style="color: white" align="center">
+		{{form.nickname(style="width: 60%;", autofocus=true, id="nickname", placeholder="Имя")}}<br><br>
+		{{form.password(style="width: 60%;", id="password", placeholder="Пароль")}}<br>
+	</div>
+	<div style="color: white; padding: 20px 19% 10px 19%;">
+		{{form.remember_me}} {{_('Remember me')}}
+	</div>
+	<p align="center"><input type="submit" value="{{_('Log in')}}" style="width: 150px; height: 35px; border-radius: 15px; -moz-border-radius: 15px; -webkit-border-radius: 15px;"></p>
+	<div align="right" style="padding-right: 10px;"><a style="color: #5493E5;" href="/reallogin">{{_('Registration')}}</a></div>
+</form>
+</div>
+{% endblock %}

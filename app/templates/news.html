@@ -1,0 +1,36 @@
+{% extends "basesocial.html" %}
+{% block script %}
+{% endblock %}
+{% block menutop %}
+<div class="menu-top">
+	<ul class="tabrow">
+		<li>
+			<a href="/profile">{{_('My profile')}}</a>
+		</li>
+		<li>
+			<a href="/news">/ {{_('News')}}</a>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+{% block body %}
+<br>
+<p style="color: red;">Раздел &lt;Новости&gt; находится в разработке, страница обделена каким-либо дизайном!</p>
+{% if news_list|length %}
+{% for record in news_list %}
+	<div class="message">
+	{% if record.typeofnews == 'message' %}
+		{% if record.parent_id %}
+			{{record.timestamp}} - new record: {{record.msg_author}}&gt; {{record.body}} in reply to <a href="{{'/profile/'+record.parent.msg_dest+'#'~record.parent.msg_id}}">{{record.parent.msg_id}}</a>	
+		{% else %}
+			{{record.timestamp}} - new record: {{record.msg_author}}&gt; {{record.body}} <a href="{{'/profile/'+record.msg_dest+'#'~record.msg_id}}">{{record.msg_id}}</a>
+		{% endif %}
+	{% else %}
+		{{record.upload_data}} - new photo: {{record.file_author}}&gt; <img src="{{url_for('thumbnails', filename=record.filename)}}">
+	{% endif %}
+	</div>
+{% endfor %}
+{% else %}
+<p>You have not news yet. You will see new comments to your messages, friend's profile updates on this page.</p>
+{% endif %}
+{% endblock %}

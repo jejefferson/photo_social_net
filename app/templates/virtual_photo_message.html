@@ -1,0 +1,38 @@
+{% extends "basesocial.html" %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='photo_navigation.js')}}"></script>
+{% endblock %}
+{% block menutop %}
+<div class="menu-top">
+</div>
+{% endblock %}
+{% block body %}
+<br>
+<div style="margin-left: 5%; width: 90%;">
+	<a id="left" href="/search_images/virtual_gallery/message/{{message_id}}/{{photonum-1}}">
+		{#<div style="width:5%;float:left; background: #2583D2; height: 200px;opacity: 0.4;">#}
+		<div class="arrow-left">
+		</div>
+	</a>
+	<div style="float: left; width: 80%; margin-left: 5%; text-align: center;">
+		<a href="{{url_for('upload', filename = photo.filename)}}">
+			<img id="image" style ="width: auto; height : auto; max-height: 600px; max-width: 100%;" src="{{url_for('upload', filename = photo.filename)}}" width="100%">
+		</a>
+	</div>
+	<a id="right" href="/search_images/virtual_gallery/message/{{message_id}}/{{photonum+1}}">
+		{# <div style="width:5%;float:left; margin-left: 5%; background: #2583D2; height: 200px;opacity: 0.4;"> #}
+		<div class="arrow-right">
+		</div>
+	</a>
+</div>
+
+<div style="clear:both; margin-left: 5%; text-align: center;">
+	{% if photo.name %}
+		{{photo.name}}
+	{% else %}
+		{{photo.filename.split('_', 2)[2]}}
+	{% endif %}
+	<br>
+</div>
+{% include "photo_above.html" %}
+{% endblock %}

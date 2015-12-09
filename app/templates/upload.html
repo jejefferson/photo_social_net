@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{_('Upload new File')}}</h1>
+<form action="" method=post enctype=multipart/form-data>
+	<p><input type=file name=file>
+	<input type=submit value=Upload>
+<div class="sign">
+	<h2 align="center">{{_("Recent uploaded files:")}}</h2>
+	{% if form.link.data %}
+	<font color="#377ba8">
+		{{_('Link to your file is')}}: {{form.link(size=form.link.data|length, autofocus=True)}}<!-- <a href="/upload/{{recent}}">download</a> -->
+	</font>
+	{% endif %}
+	<div style="position: relative; float: right;">
+		<div style="position:relative; margin-right: 20px;">
+		<table class="gradienttable" width="900"
+			<tr><th>URL</th><th>author</th></tr>
+			{% for file in files %}
+			<tr><td><a href="{{url_for('upload', filename=file.filename)}}">{{file.filename}}</a></td><td>{{file.file_author}}</td></tr>
+			{% endfor %}
+		</table>
+		</div>
+	</div>
+	{% if form.link.data %}
+	{% if form.link.data| file_is_image %}
+	<div style="width: 30%; margin: 20px;">
+			<a href="{{form.link.data}}"><img src="{{url_for('thumbnails', filename=(form.link.data).split('/upload/', 1)[1])}}" height="100%" width="100%" alt="preview your file"></a>
+	</div>
+	{% endif %}
+	{% endif %}
+</div>
+{% endblock %}

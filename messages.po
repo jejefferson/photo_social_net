@@ -1,0 +1,1013 @@
+# Translations template for PROJECT.
+# Copyright (C) 2014 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2014-11-04 20:53+0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: app/forms.py:75 app/forms.py:84 app/forms.py:133
+#: app/templates/comment.html:72 app/templates/message.html:140
+msgid "Send"
+msgstr ""
+
+#: app/forms.py:76 app/forms.py:85 app/forms.py:134
+#: app/templates/comment.html:22 app/templates/comment.html:40
+#: app/templates/message.html:70 app/templates/message.html:108
+#: app/templates/photo_above.html:73
+msgid "delete"
+msgstr ""
+
+#: app/forms.py:96 app/forms.py:100 app/forms.py:104
+msgid "add"
+msgstr ""
+
+#: app/forms.py:111 app/forms.py:121
+msgid "to search"
+msgstr ""
+
+#: app/forms.py:112 app/forms.py:122 app/views.py:1372
+msgid "clear"
+msgstr ""
+
+#: app/forms.py:117
+msgid "small"
+msgstr ""
+
+#: app/forms.py:117
+msgid "medium"
+msgstr ""
+
+#: app/forms.py:117
+msgid "big"
+msgstr ""
+
+#: app/forms.py:117
+msgid "old_full_shot"
+msgstr ""
+
+#: app/forms.py:117
+msgid "full_shot"
+msgstr ""
+
+#: app/views.py:67
+msgid "Fired"
+msgstr ""
+
+#: app/views.py:68
+msgid "Off"
+msgstr ""
+
+#: app/views.py:118 app/templates/photo_above.html:38
+#: app/templates/photo_above.html:45
+msgid "no info"
+msgstr ""
+
+#: app/views.py:190
+msgid "An error occured! No suck unsername"
+msgstr ""
+
+#: app/views.py:208
+msgid "User with this email already exist!"
+msgstr ""
+
+#: app/views.py:215
+msgid "Registration successfull!"
+msgstr ""
+
+#: app/views.py:218
+msgid "User already exitst!"
+msgstr ""
+
+#: app/views.py:259 app/views.py:1457 app/views.py:1564
+msgid "Hackors not allowed!"
+msgstr ""
+
+#: app/views.py:279
+msgid "Wrong password"
+msgstr ""
+
+#: app/views.py:282
+msgid "User do not exist"
+msgstr ""
+
+#: app/views.py:320
+msgid "File with this filename alredy uploaded!"
+msgstr ""
+
+#: app/views.py:324
+msgid "So where is your file?"
+msgstr ""
+
+#: app/views.py:339
+msgid "Access denied for you, sorry!"
+msgstr ""
+
+#: app/views.py:379
+msgid "User was added to admin list"
+msgstr ""
+
+#: app/views.py:396
+msgid "File not found!"
+msgstr ""
+
+#: app/views.py:399
+msgid "File not found"
+msgstr ""
+
+#: app/views.py:414
+msgid "File successfully deleted!"
+msgstr ""
+
+#: app/views.py:425 app/views.py:784
+msgid "You are not present in DB"
+msgstr ""
+
+#: app/views.py:447
+msgid "You need old password to change it"
+msgstr ""
+
+#: app/views.py:452
+msgid "password changed!"
+msgstr ""
+
+#: app/views.py:454
+msgid "wrong old password"
+msgstr ""
+
+#: app/views.py:458
+msgid "email changed"
+msgstr ""
+
+#: app/views.py:542
+msgid "You may download only images in gallery"
+msgstr ""
+
+#: app/views.py:567
+msgid "No parent message found!"
+msgstr ""
+
+#: app/views.py:572 app/views.py:583
+msgid "So where your comment?"
+msgstr ""
+
+#: app/views.py:578
+msgid "Reply id should be a number!"
+msgstr ""
+
+#: app/views.py:602
+msgid "You need fill destination field"
+msgstr ""
+
+#: app/views.py:605
+msgid "You can not send message to myself"
+msgstr ""
+
+#: app/views.py:608
+msgid "No such username, you should specify a real user name"
+msgstr ""
+
+#: app/views.py:612
+msgid "So where your message?"
+msgstr ""
+
+#: app/views.py:647
+msgid "Your profile and all signed data was removed!"
+msgstr ""
+
+#: app/views.py:665 app/views.py:1049 app/views.py:1057 app/views.py:1096
+#: app/views.py:1127 app/views.py:1160 app/views.py:1175 app/views.py:1196
+#: app/views.py:1216 app/views.py:1234
+msgid "Bad request"
+msgstr ""
+
+#: app/views.py:819
+msgid "Hackers not allowed!"
+msgstr ""
+
+#: app/views.py:871
+msgid "Operation not permitted"
+msgstr ""
+
+#: app/views.py:931
+msgid "Cant friend"
+msgstr ""
+
+#: app/views.py:938
+msgid "Friended"
+msgstr ""
+
+#: app/views.py:947
+msgid "Incorrect request"
+msgstr ""
+
+#: app/views.py:951
+msgid "Cant unfriend"
+msgstr ""
+
+#: app/views.py:955
+msgid "Removed from friends"
+msgstr ""
+
+#: app/views.py:988 app/views.py:1011
+msgid "photogalleries"
+msgstr ""
+
+#: app/views.py:995
+msgid "Bad request, no such user"
+msgstr ""
+
+#: app/views.py:1108 app/views.py:1439 app/views.py:1473
+msgid "So where is your comment?"
+msgstr ""
+
+#: app/views.py:1131 app/views.py:1134 app/views.py:1163 app/views.py:1178
+#: app/views.py:1199 app/views.py:1219 app/views.py:1237
+msgid "Hackors not allowed"
+msgstr ""
+
+#: app/views.py:1453
+msgid "No such message"
+msgstr ""
+
+#: app/views.py:1561
+msgid "Error, message not found!"
+msgstr ""
+
+#: app/views.py:1666
+msgid "You should fill both fields!"
+msgstr ""
+
+#: app/views.py:1669
+msgid "Group with this name already exist!"
+msgstr ""
+
+#: app/views.py:1684 app/views.py:1720 app/views.py:1736 app/views.py:1752
+msgid "Group not found"
+msgstr ""
+
+#: app/views.py:1724
+msgid "You have already subscribed"
+msgstr ""
+
+#: app/views.py:1740
+msgid "You are not subscribed yet"
+msgstr ""
+
+#: app/views.py:1755
+msgid "Haxors not allowed!"
+msgstr ""
+
+#: app/templates/base.html:22
+msgid "Entertainment"
+msgstr ""
+
+#: app/templates/base.html:22 app/templates/chat.html:9
+#: app/templates/chat_history.html:3
+msgid "Chat"
+msgstr ""
+
+#: app/templates/base.html:22
+msgid "File-exchange"
+msgstr ""
+
+#: app/templates/base.html:22
+msgid "Admin's panel"
+msgstr ""
+
+#: app/templates/basesocial.html:30 app/templates/edit_group.html:6
+#: app/templates/friends.html:6 app/templates/gallery.html:9
+#: app/templates/group.html:8 app/templates/groups.html:8
+#: app/templates/messages.html:11 app/templates/modprofile.html:6
+#: app/templates/news.html:8 app/templates/people.html:6
+#: app/templates/photo.html:9 app/templates/photogallery.html:9
+#: app/templates/profile.html:10 app/templates/virtual_photo.html:9
+msgid "My profile"
+msgstr ""
+
+#: app/templates/basesocial.html:44
+msgid "Edit"
+msgstr ""
+
+#: app/templates/basesocial.html:45 app/templates/news.html:11
+msgid "News"
+msgstr ""
+
+#: app/templates/basesocial.html:46 app/templates/messages.html:14
+msgid "Messages"
+msgstr ""
+
+#: app/templates/basesocial.html:47 app/templates/gallery.html:27
+#: app/templates/photo.html:27 app/templates/photogallery.html:13
+#: app/templates/photogallery.html:27 app/templates/profile.html:127
+msgid "Photo galleries"
+msgstr ""
+
+#: app/templates/basesocial.html:48 app/templates/friends.html:16
+#: app/templates/gallery.html:18 app/templates/photo.html:18
+#: app/templates/photogallery.html:18 app/templates/profile.html:17
+#: app/templates/profile.html:114
+msgid "Friends"
+msgstr ""
+
+#: app/templates/basesocial.html:49 app/templates/gallery.html:20
+#: app/templates/people.html:9 app/templates/photo.html:20
+#: app/templates/photogallery.html:20 app/templates/profile.html:15
+msgid "People"
+msgstr ""
+
+#: app/templates/basesocial.html:50 app/templates/edit_group.html:9
+#: app/templates/group.html:11 app/templates/groups.html:11
+#: app/templates/groups.html:31
+msgid "Groups"
+msgstr ""
+
+#: app/templates/chat.html:18 app/templates/twitter.html:15
+msgid "Online users:"
+msgstr ""
+
+#: app/templates/chat.html:18 app/templates/friends.html:21
+#: app/templates/people.html:23 app/templates/twitter.html:15
+msgid "total"
+msgstr ""
+
+#: app/templates/chat.html:28 app/templates/twitter.html:25
+msgid "Your message:"
+msgstr ""
+
+#: app/templates/chat.html:36
+msgid "chat history"
+msgstr ""
+
+#: app/templates/chat_history.html:3
+msgid "Chat history"
+msgstr ""
+
+#: app/templates/chat_history.html:11 app/templates/friends.html:53
+#: app/templates/gallery.html:80 app/templates/messages.html:62
+#: app/templates/messages.html:86 app/templates/people.html:62
+#: app/templates/photogallery.html:80 app/templates/photogallery.html:103
+#: app/templates/profile.html:156 app/templates/profile.html:180
+msgid "Pages"
+msgstr ""
+
+#: app/templates/chat_history.html:11 app/templates/friends.html:53
+#: app/templates/gallery.html:80 app/templates/messages.html:62
+#: app/templates/messages.html:86 app/templates/people.html:62
+#: app/templates/photogallery.html:80 app/templates/photogallery.html:103
+#: app/templates/profile.html:156 app/templates/profile.html:180
+msgid "of"
+msgstr ""
+
+#: app/templates/chat_history.html:24 app/templates/friends.html:65
+#: app/templates/gallery.html:93 app/templates/messages.html:75
+#: app/templates/messages.html:99 app/templates/people.html:75
+#: app/templates/photogallery.html:92 app/templates/photogallery.html:115
+#: app/templates/profile.html:169 app/templates/profile.html:194
+msgid "last"
+msgstr ""
+
+#: app/templates/chat_history.html:27 app/templates/chat_history.html:29
+#: app/templates/friends.html:68 app/templates/friends.html:70
+#: app/templates/gallery.html:97 app/templates/gallery.html:99
+#: app/templates/messages.html:78 app/templates/messages.html:80
+#: app/templates/messages.html:102 app/templates/messages.html:104
+#: app/templates/people.html:78 app/templates/people.html:80
+#: app/templates/photogallery.html:95 app/templates/photogallery.html:97
+#: app/templates/photogallery.html:118 app/templates/photogallery.html:120
+#: app/templates/profile.html:172 app/templates/profile.html:174
+#: app/templates/profile.html:197 app/templates/profile.html:199
+msgid "Back"
+msgstr ""
+
+#: app/templates/chat_history.html:31 app/templates/friends.html:72
+#: app/templates/gallery.html:101 app/templates/messages.html:82
+#: app/templates/messages.html:106 app/templates/people.html:82
+#: app/templates/photogallery.html:99 app/templates/photogallery.html:122
+#: app/templates/profile.html:176 app/templates/profile.html:201
+msgid "Forward"
+msgstr ""
+
+#: app/templates/comment.html:9 app/templates/message.html:32
+#: app/templates/message.html:39
+msgid "wrote"
+msgstr ""
+
+#: app/templates/comment.html:13
+msgid "copy link to comment"
+msgstr ""
+
+#: app/templates/comment.html:19 app/templates/message.html:65
+msgid "edit message"
+msgstr ""
+
+#: app/templates/comment.html:22
+msgid "Remove comment"
+msgstr ""
+
+#: app/templates/comment.html:71 app/templates/message.html:139
+msgid "Add files"
+msgstr ""
+
+#: app/templates/comment.html:79 app/templates/message.html:151
+msgid "reply"
+msgstr ""
+
+#: app/templates/comment.html:82
+msgid "In reply to"
+msgstr ""
+
+#: app/templates/edit_group.html:15 app/templates/group.html:34
+msgid "Edit group"
+msgstr ""
+
+#: app/templates/edit_group.html:26 app/templates/group.html:66
+#: app/templates/modprofile.html:20 app/templates/profile.html:78
+msgid "General data"
+msgstr ""
+
+#: app/templates/edit_group.html:28
+msgid "Descriptioin"
+msgstr ""
+
+#: app/templates/edit_group.html:29
+msgid "Picture"
+msgstr ""
+
+#: app/templates/edit_group.html:39 app/templates/modprofile.html:44
+msgid "Load user picture:"
+msgstr ""
+
+#: app/templates/edit_group.html:43
+msgid "Update group"
+msgstr ""
+
+#: app/templates/edit_group.html:47
+msgid "delete group"
+msgstr ""
+
+#: app/templates/friends.html:9
+msgid "Your friends"
+msgstr ""
+
+#: app/templates/friends.html:18
+msgid "Search"
+msgstr ""
+
+#: app/templates/friends.html:23
+msgid "You does not have friends yet"
+msgstr ""
+
+#: app/templates/friends.html:36 app/templates/messages.html:32
+#: app/templates/people.html:35 app/templates/profile.html:38
+msgid "Online"
+msgstr ""
+
+#: app/templates/friends.html:38 app/templates/messages.html:34
+#: app/templates/people.html:37 app/templates/profile.html:40
+msgid "Offline"
+msgstr ""
+
+#: app/templates/friends.html:42 app/templates/people.html:41
+#: app/templates/profile.html:67
+msgid "Write message"
+msgstr ""
+
+#: app/templates/friends.html:44 app/templates/people.html:48
+#: app/templates/profile.html:74
+msgid "Remove from friends"
+msgstr ""
+
+#: app/templates/gallery.html:13 app/templates/photo.html:13
+msgid "Your photo galleries"
+msgstr ""
+
+#: app/templates/gallery.html:40
+msgid "Add photo"
+msgstr ""
+
+#: app/templates/gallery.html:43 app/templates/group.html:41
+#: app/templates/message.html:174 app/templates/profile.html:50
+msgid "You may select one or several files for upload"
+msgstr ""
+
+#: app/templates/gallery.html:43 app/templates/group.html:41
+#: app/templates/message.html:174 app/templates/profile.html:50
+msgid "Send files to server"
+msgstr ""
+
+#: app/templates/gallery.html:48
+msgid "Summary info"
+msgstr ""
+
+#: app/templates/gallery.html:49
+msgid "Author"
+msgstr ""
+
+#: app/templates/gallery.html:50
+msgid "Name"
+msgstr ""
+
+#: app/templates/gallery.html:51
+msgid "Info"
+msgstr ""
+
+#: app/templates/gallery.html:52
+msgid "Created at"
+msgstr ""
+
+#: app/templates/gallery.html:53
+msgid "Shooting Location"
+msgstr ""
+
+#: app/templates/gallery.html:58
+msgid "add/info"
+msgstr ""
+
+#: app/templates/gallery.html:62 app/templates/image_search.html:19
+msgid "Photos"
+msgstr ""
+
+#: app/templates/group.html:25
+msgid "Description"
+msgstr ""
+
+#: app/templates/group.html:27
+msgid "Group subscribed on tags"
+msgstr ""
+
+#: app/templates/group.html:36 app/templates/profile.html:46
+msgid "Blog"
+msgstr ""
+
+#: app/templates/group.html:39 app/templates/profile.html:49
+msgid "Add post"
+msgstr ""
+
+#: app/templates/group.html:40
+msgid "Group's message"
+msgstr ""
+
+#: app/templates/group.html:59
+msgid "Unsubscribe"
+msgstr ""
+
+#: app/templates/group.html:63
+msgid "Subscribe"
+msgstr ""
+
+#: app/templates/group.html:68
+msgid "Created"
+msgstr ""
+
+#: app/templates/group.html:70
+msgid "Members"
+msgstr ""
+
+#: app/templates/groups.html:19
+msgid "Create new group"
+msgstr ""
+
+#: app/templates/groups.html:22 app/templates/photogallery.html:39
+msgid "name"
+msgstr ""
+
+#: app/templates/groups.html:23
+msgid "description"
+msgstr ""
+
+#: app/templates/groups.html:28 app/templates/photogallery.html:46
+msgid "create new"
+msgstr ""
+
+#: app/templates/image_search.html:4
+msgid "Search photo"
+msgstr ""
+
+#: app/templates/image_search.html:10
+msgid "Photo search filter"
+msgstr ""
+
+#: app/templates/image_search.html:12
+msgid "tags"
+msgstr ""
+
+#: app/templates/image_search.html:13
+msgid "camera model"
+msgstr ""
+
+#: app/templates/image_search.html:14
+msgid "lens model"
+msgstr ""
+
+#: app/templates/image_search.html:15
+msgid "iso from"
+msgstr ""
+
+#: app/templates/image_search.html:15
+msgid "to iso"
+msgstr ""
+
+#: app/templates/image_search.html:16
+msgid "size"
+msgstr ""
+
+#: app/templates/image_search.html:19
+msgid "Total"
+msgstr ""
+
+#: app/templates/kino.html:3
+msgid "Schedule Megafilm 45 Kurgan"
+msgstr ""
+
+#: app/templates/kino.html:5
+msgid "Update at"
+msgstr ""
+
+#: app/templates/message.html:43
+msgid "copy link to message"
+msgstr ""
+
+#: app/templates/message.html:70
+msgid "Remove message"
+msgstr ""
+
+#: app/templates/message.html:93
+msgid "Attachments"
+msgstr ""
+
+#: app/templates/message.html:108
+msgid "delete file"
+msgstr ""
+
+#: app/templates/message.html:147
+msgid "Comments count"
+msgstr ""
+
+#: app/templates/message.html:148
+msgid "show/hide comments"
+msgstr ""
+
+#: app/templates/message.html:166
+msgid "Leave a comment"
+msgstr ""
+
+#: app/templates/message_for_ajax.html:55
+msgid "To:"
+msgstr ""
+
+#: app/templates/messages.html:18
+msgid "Conversation with"
+msgstr ""
+
+#: app/templates/messages.html:28
+msgid "All your messages"
+msgstr ""
+
+#: app/templates/messages.html:30
+msgid "Private conversation with"
+msgstr ""
+
+#: app/templates/messages.html:37
+msgid "Sending message"
+msgstr ""
+
+#: app/templates/messages.html:41
+msgid "to"
+msgstr ""
+
+#: app/templates/messages.html:42
+msgid "message body"
+msgstr ""
+
+#: app/templates/messages.html:52
+msgid "Your messages"
+msgstr ""
+
+#: app/templates/messages.html:54
+msgid "Conversation"
+msgstr ""
+
+#: app/templates/modprofile.html:9
+msgid "Change your profile data"
+msgstr ""
+
+#: app/templates/modprofile.html:22 app/templates/profile.html:81
+msgid "Real name:"
+msgstr ""
+
+#: app/templates/modprofile.html:23 app/templates/profile.html:84
+msgid "Your gender:"
+msgstr ""
+
+#: app/templates/modprofile.html:24
+msgid "Birthday date:"
+msgstr ""
+
+#: app/templates/modprofile.html:25 app/templates/profile.html:90
+msgid "Location country:"
+msgstr ""
+
+#: app/templates/modprofile.html:26 app/templates/profile.html:93
+msgid "Location city:"
+msgstr ""
+
+#: app/templates/modprofile.html:27 app/templates/profile.html:96
+msgid "General info about you:"
+msgstr ""
+
+#: app/templates/modprofile.html:28 app/templates/profile.html:99
+msgid "You interests:"
+msgstr ""
+
+#: app/templates/modprofile.html:30 app/templates/profile.html:102
+msgid "Contacts:"
+msgstr ""
+
+#: app/templates/modprofile.html:32 app/templates/profile.html:105
+msgid "Jabber ID:"
+msgstr ""
+
+#: app/templates/modprofile.html:33 app/templates/profile.html:108
+msgid "Phone number:"
+msgstr ""
+
+#: app/templates/modprofile.html:34 app/templates/profile.html:111
+msgid "Pgp key id:"
+msgstr ""
+
+#: app/templates/modprofile.html:46
+msgid "Language:"
+msgstr ""
+
+#: app/templates/modprofile.html:47
+msgid "Use russian version:"
+msgstr ""
+
+#: app/templates/modprofile.html:48
+msgid "Change email"
+msgstr ""
+
+#: app/templates/modprofile.html:50
+msgid "New Email:"
+msgstr ""
+
+#: app/templates/modprofile.html:52
+msgid "Change password"
+msgstr ""
+
+#: app/templates/modprofile.html:54
+msgid "Old password:"
+msgstr ""
+
+#: app/templates/modprofile.html:55
+msgid "New password:"
+msgstr ""
+
+#: app/templates/modprofile.html:59
+msgid "Update profile:"
+msgstr ""
+
+#: app/templates/modprofile.html:63
+msgid "delete profile"
+msgstr ""
+
+#: app/templates/people.html:16
+msgid "people"
+msgstr ""
+
+#: app/templates/people.html:17
+msgid "Filter"
+msgstr ""
+
+#: app/templates/people.html:19
+msgid "nickname"
+msgstr ""
+
+#: app/templates/people.html:19
+msgid "realname"
+msgstr ""
+
+#: app/templates/people.html:20
+msgid "age"
+msgstr ""
+
+#: app/templates/people.html:20
+msgid "from"
+msgstr ""
+
+#: app/templates/people.html:20
+msgid "up to"
+msgstr ""
+
+#: app/templates/people.html:44 app/templates/profile.html:70
+msgid "Add to friends"
+msgstr ""
+
+#: app/templates/photo.html:44
+msgid "back"
+msgstr ""
+
+#: app/templates/photo.html:54
+msgid "forward"
+msgstr ""
+
+#: app/templates/photo.html:80
+msgid "save"
+msgstr ""
+
+#: app/templates/photo.html:83
+msgid "edit name"
+msgstr ""
+
+#: app/templates/photo_above.html:1
+msgid "download"
+msgstr ""
+
+#: app/templates/photo_above.html:5
+msgid "delete photo"
+msgstr ""
+
+#: app/templates/photo_above.html:8
+msgid "rotate clockwise"
+msgstr ""
+
+#: app/templates/photo_above.html:11
+msgid "rotate counter-clockwise"
+msgstr ""
+
+#: app/templates/photo_above.html:22
+msgid "Add comment"
+msgstr ""
+
+#: app/templates/photo_above.html:25
+msgid "Comment"
+msgstr ""
+
+#: app/templates/photo_above.html:26
+msgid "Add"
+msgstr ""
+
+#: app/templates/photo_above.html:31
+msgid "Exif data"
+msgstr ""
+
+#: app/templates/photo_above.html:33
+msgid "Camera model"
+msgstr ""
+
+#: app/templates/photo_above.html:33
+msgid "Lens"
+msgstr ""
+
+#: app/templates/photo_above.html:34
+msgid "Resolution"
+msgstr ""
+
+#: app/templates/photo_above.html:40
+msgid "Shot date"
+msgstr ""
+
+#: app/templates/photo_above.html:41
+msgid "ExposureTime"
+msgstr ""
+
+#: app/templates/photo_above.html:43
+msgid "sec"
+msgstr ""
+
+#: app/templates/photo_above.html:47
+msgid "FNumber"
+msgstr ""
+
+#: app/templates/photo_above.html:48
+msgid "ISO"
+msgstr ""
+
+#: app/templates/photo_above.html:48
+msgid "Focal length"
+msgstr ""
+
+#: app/templates/photo_above.html:48
+msgid "mm"
+msgstr ""
+
+#: app/templates/photo_above.html:49
+msgid "Flash"
+msgstr ""
+
+#: app/templates/photo_above.html:55
+msgid "Comments"
+msgstr ""
+
+#: app/templates/photo_above.html:59
+msgid "delete all"
+msgstr ""
+
+#: app/templates/photo_above.html:76
+msgid "delete all from author"
+msgstr ""
+
+#: app/templates/photogallery.html:36
+msgid "Add gallery"
+msgstr ""
+
+#: app/templates/photogallery.html:40
+msgid "info"
+msgstr ""
+
+#: app/templates/photogallery.html:41
+msgid "location"
+msgstr ""
+
+#: app/templates/photogallery.html:49
+msgid "Galleries"
+msgstr ""
+
+#: app/templates/photogallery.html:66
+msgid "Shooting location"
+msgstr ""
+
+#: app/templates/photogallery.html:69
+msgid "delete gallery"
+msgstr ""
+
+#: app/templates/profile.html:42
+msgid "Last seen"
+msgstr ""
+
+#: app/templates/profile.html:87
+msgid "Birthday date"
+msgstr ""
+
+#: app/templates/profile.html:133
+msgid "Show all photo galleries"
+msgstr ""
+
+#: app/templates/reallogin.html:4
+msgid "Social network 9600"
+msgstr ""
+
+#: app/templates/reallogin.html:9
+msgid "Please enter your name"
+msgstr ""
+
+#: app/templates/reallogin.html:11
+msgid "Your password"
+msgstr ""
+
+#: app/templates/reallogin.html:13
+msgid "Your email"
+msgstr ""
+
+#: app/templates/reallogin.html:22
+msgid "Register"
+msgstr ""
+
+#: app/templates/reallogin.html:25
+msgid "Sign in"
+msgstr ""
+
+#: app/templates/sign.html:3
+msgid "Hello, again"
+msgstr ""
+
+#: app/templates/sign.html:12
+msgid "Remember me"
+msgstr ""
+
+#: app/templates/sign.html:14
+msgid "Log in"
+msgstr ""
+
+#: app/templates/sign.html:15
+msgid "Registration"
+msgstr ""
+
+#: app/templates/twitter.html:8
+msgid "Multi user chat"
+msgstr ""
+
+#: app/templates/upload.html:3
+msgid "Upload new File"
+msgstr ""
+
+#: app/templates/upload.html:8
+msgid "Recent uploaded files:"
+msgstr ""
+
+#: app/templates/upload.html:11
+msgid "Link to your file is"
+msgstr ""
+

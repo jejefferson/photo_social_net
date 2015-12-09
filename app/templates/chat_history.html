@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<h1><a href="/chat">{{_("Chat")}}</a> / {{_("Chat history")}}</h1><br>
+	<div class="history_textfield">
+		{% for message in messages %}
+		<span id="message">[{{message.timestamp}}]<font color="#9C0064">&lt;{{message.msg_author}}&gt;</font><span style="white-space: pre-wrap">{{message.body+'\n'}}</span></span>
+		{% endfor %}
+	</div>
+
+<div>
+	{{_('Pages')}} {{page}} {{_('of')}} {{pages_count}} <br>
+	{% for p in [-5,-4,-3,-2,-1] %}
+		{% if p+page >= 0 %}
+			<a href="/chat/history?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	<span style="background: #5CA1E0">{{page}}</span>
+	{% for p in [1,2,3,4,5] %}
+		{% if p+page <= pages_count %}
+			<a href="/chat/history?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %} <br>
+	{% if pages_count > 9 %}
+		<a href="/chat/history?page={{pages_count}}">{{_('last')}}</a><br>
+	{% endif %}
+	{% if page %}
+	<a href="/chat/history?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% else %} 
+	<a class ="disabled" href="/chat/history?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% endif %}
+	<a href="/chat/history?page={{page+1}}">{{_('Forward')}}&gt;</a>
+</div>
+{% endblock %}
+{% block navigation %}
+{% endblock %}

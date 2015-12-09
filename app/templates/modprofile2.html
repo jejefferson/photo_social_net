@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="menu-top">
+	<h1>Change your profile data</h1>
+</div>
+<div>
+<div class="sphinxsidebarwrapper">
+	<br>
+	<a href="">Твой профиль</a><br><br>
+	<a href="">Здесь все твои друзья))</a><br><br>
+	<a href="">Сообщения </a><br><br>
+	<a href="">Успех </a><br><br>
+	<a href="">Уважение </a><br><br>
+</div>
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+
+          <div class="body">
+			  <form action="" method="post" name="update_profile" enctype="multipart/form-data">
+				{{form.hidden_tag()}}
+				<br>
+				<div id="login">
+					<div style="float: left; width: 50%;">
+						<h3>General data</h3>
+						<table>
+							<tr><td>Real name:</td><td>{{form.realname}}</td></tr>
+							<tr><td>Your gender:</td><td>{{form.user_gender}}</td></tr>
+							<tr><td>Birthday date</td><td>{{form.birth_date_day}} {{form.birth_date_month}} {{form.birth_date_year}}</td></tr>
+							<tr><td>Location country:</td><td>{{form.user_location_country(cols="20", rows="5", autocomplete="off")}}</td></tr>
+							<tr><td>Location city:</td><td>{{form.user_location_city(cols="20", rows="5", autocomplete="off")}}</td></tr>
+							<tr><td>General info about you:</td><td>{{form.user_general_info(cols="20", rows="5", autocomplete="off")}}</td></tr>
+							<tr><td>You interests:</td><td>{{form.user_interests(cols="20", rows="5", autocomplete="off")}}</td></tr>
+						</table>
+						<h3>Contacts:</h3>
+						<table>
+							<tr><td>Jabber ID:</td><td>{{form.jid}}</td></tr>
+							<tr><td>Phone number:</td><td>{{form.phone_number}}</td></tr>
+							<tr><td>Pgp key id:</td><td>{{form.pgpkeyid}}</td></tr>	
+						</table>
+					</div>
+					<div style="position: relative; float:left;width: 45%; top: 0px;">
+						<div style="width: 30%; padding: 5px; margin: 20px; margin-left:40px; border: 10px; border-color: red;">
+							{% if userpic_path %}
+							<img src={{url_for('upload', filename=userpic_path)}} width="100%" height="100%">
+							{% else %}
+							<img src={{url_for('static', filename='anon.jpg')}} width="100%" height="100%">
+							{% endif %}
+							Load user picture: {{form.user_pic}}
+						</div>
+						<h3>Change email</h3>
+						<table>
+							<tr><td>New Email:</td><td>{{form.new_email}}</td></tr>
+						</table>
+						<h3>Change password</h3>
+						<table>
+							<tr><td>Old password:</td><td>{{form.old_password}}</td></tr>
+							<tr><td>New password:</td><td>{{form.new_password}}</td></tr>
+						</table>
+					</div>
+					<div style="clear:both;"></div>
+					<h2>Update profile: {{form.submit}}</h2>
+				</div>
+			  </form>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+		  </div>
+
+    <div class="footer">
+    Je web-studio 2017
+    </div>
+{% endblock %}

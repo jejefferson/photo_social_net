@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='jquery-1.7.1.min.js')}}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='load_chat.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='focus.js') }}"></script>
+{% endblock %}
+{% block content %}
+<ul class="top-menu">
+	<li><a href="/chat">{{_("Chat")}}</a></li>
+</ul>
+<div style="clear: both;"></div>
+	<div>
+		<div class="textfield" id="textfield">
+			{% for message in messages %}
+				{% include "chat_message.html" %}
+			{% endfor %}
+		</div>
+		<div class="onlinelisttitle"><h2 align="center">{{_('Online users:')}} ({{online_users|length}} {{_('total')}})</h2></div>
+		<div class="onlinelist">
+			{% for user in online_users %}
+			<li style="color: #0EB80E;">{{user}}</li>
+			{% endfor %}
+		</div>
+		<form action="" method="post" name="login">
+			{{form.hidden_tag()}}
+			<div>
+				<div class="sendstring">
+					<p id="login">{{_('Your message:')}}<br>{{form.message(cols="80", rows="3", autocomplete="off", autofocus=true, onkeydown="if (event.keyCode == 13 && !event.shiftKey) document.getElementById('submitbutton').click()")}}
+					<input type="image" src="{{url_for('static', filename='key_Enter.png')}}" name="submit" value="Pssst" class="submitbutton" id="submitbutton"/>
+				</div>
+				
+			</div>
+		</form>
+	</div>
+	<div style="text-align: right; padding: 100px 10px 10px 100px;">
+		<a href="/chat/history">{{_('chat history')}}</a>
+	</div>
+	<div id="sound"></div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>OLOLO PIXIE chat</h1>
+<form action="" method="post" name="login">
+	{{form.hidden_tag()}}
+	<p id="login">
+		Please enter your name:<br>
+		{{form.text(size=30)}}<br>
+	</p>
+	<p id="login">Your message:<br>
+		{{form.message(size=80)}}<br>
+	</p>
+	<p id="login">{{form.remember_me}} Remember me</p>
+	<p id="login">{{form.show_logo}} Don't show python Logo</p>
+	<p><input type="submit" value="Pssst"></p>
+	<h2 align="center">FUCk3n P()sssts</h2>
+	<div class="textfield">
+	{% for message in messages %}
+	{{message.body}} - <{{message.timestamp}}> by {{message.msg_author}}<br><br>
+	{% endfor %}
+	</div>
+</form>
+{% endblock %}
+
+{% block logo %}
+{% if logo %}
+<img src="{{ url_for('static', filename = 'python_powered.png') }}"  width="205" height="100">
+<img src="{{ url_for('static', filename = 'mode.je.jpg')}}" width="80", height="100">
+<div id="sign"><p align="center">je web studio 2014</p></div>
+{% endif %}
+{% endblock %}

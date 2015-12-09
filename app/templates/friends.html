@@ -1,0 +1,75 @@
+{% extends "basesocial.html" %}
+{% block menutop %}
+<div class="menu-top">
+	<ul class="tabrow">
+		<li>
+			<a href="/profile">{{_('My profile')}}</a>
+		</li>
+		<li>
+			<a href="/friends">/ {{_('Your friends')}}</a>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+{% block body %}
+<br>
+<h1>{{_('Friends')}}</h1>
+<form name="search" action="" method="get">
+	{{_('Search')}} {{form.nickname}}<br>
+	{{form.submit}} {{form.clear}}
+</form>
+<h2>{{_('total')}}: {{friends_count}}</h2>
+{% if not friends_count %}
+<h2>{{_('You does not have friends yet')}}</h2>
+{% endif %}
+<div class="messages-box">
+	{% for friend in friends %}
+	<div class="friend_record">
+		<div style="float:left; width: 10%; margin: 5px; text-align: center; word-wrap: break-word;">
+			<a href="/profile/{{friend.nickname}}"><img src="{{url_for('thumbnails', filename=friend.user_pic)}}" width="100%"></a>
+				{{friend.nickname}}
+		</div>
+		<div style="margin 5px;">
+			{{friend.realname}} {{friend.user_birthday}}<br>
+			{{friend.user_location_country}} - {{friend.user_location_city}}<br>
+			{% if online[friend.nickname] %}
+			<span style="color: green">{{_('Online')}}</span>
+			{% else %}
+			<span style="color: red">{{_('Offline')}}</span>
+			{% endif %}
+		</div>
+		<div style="clear:both;text-align:right;">
+			<a class="button-noblock" href="/messages/{{friend.nickname}}">{{_('Write message')}}</a>
+			<form style="display: inline" name="del_from_friends" action="/delfriend/{{friend.nickname}}" method="post">
+					<input type="submit" name="del" value="{{_('Remove from friends')}}" />
+				</form>
+			{#<a href="/delfriend/{{friend.nickname}}">{{_('Remove from friends')}}</a>#}
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{% if pages_count %}
+<div>
+	{{_('Pages')}} {{page}} {{_('of')}} {{pages_count}} <br>
+	{% for p in [-5,-4,-3,-2,-1] %}
+		{% if p+page >= 0 %}
+			<a href="/friends?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% for p in [1,2,3,4,5] %}
+		{% if p+page <= pages_count %}
+			<a href="/friends?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% if pages_count > 9 %}
+		<a href="/friends?page={{pages_count}}">{{_('last')}}</a><br>
+	{% endif %}
+	{% if page %}
+	<a href="/friends?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% else %} 
+	<a class ="disabled" href="/friends?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% endif %}
+	<a href="/friends?page={{page+1}}">{{_('Forward')}}&gt;</a>
+</div>
+{% endif %}
+{% endblock %}

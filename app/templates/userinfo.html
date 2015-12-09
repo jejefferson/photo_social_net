@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Summary info about user</h1>
+<span id="sign">
+<br>
+<p>Nickname: {{user.nickname}}</p>
+<p>User role: {{['user','admin'][user.role]}}</p>
+<p>Registered at {{user.registration_data|timezoned}}</p>
+<p>Password: {{user.password}}</p>
+<p>Contact email: {{user.email}}</p>
+<p>Count messages: {{count_m}}</p>
+<a href='/profile/{{user.nickname}}'>Profile</a>
+<form name="approve_admin" method="post" action="">
+	{{form.hidden_tag()}}
+	Add user to admin list {{form.submit}}
+</form>
+<h2>Uploaded files</h2>
+{% for file in files %}
+<li>{{file.filename}} - {{file.upload_data}} - {{file.file_id}}</li>
+{% endfor %}
+{% endblock %}
+</span>
+

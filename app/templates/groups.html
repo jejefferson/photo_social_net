@@ -1,0 +1,102 @@
+{% extends "basesocial.html" %}
+{% block script %}
+{% endblock %}
+{% block menutop %}
+<div class="menu-top">
+	<ul class="tabrow">
+		<li>
+			<a href="/profile">{{_('My profile')}}</a>
+		</li>
+		<li>
+			<a href="/groups">/ {{_('Groups')}}</a>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+{% block body %}
+{% if not nick %}
+<div id="addphoto-bar">
+		<h1>{{_('Create new group')}}</h1>
+		<form name="create_group" action="" method="post">
+			{{form.hidden_tag()}}
+			{{_('name')}}: {{form.name(placeholder="name", autocomplete="off", autofocus=true)}}<br>
+			{{_('description')}}: {{form.description(placeholder="info", autocomplete="off")}}<br>
+			{{form.submit}}
+		</form>
+</div>
+<div style="clear:both; text-align: center; ">
+	<div id="switch-bar" class="triangle-down" title="{{_('create new')}}"></div>
+</div>
+{% endif %}
+<h1>{{_('Groups')}}</h1>
+<div class="messages-box">
+	{% for group in groups %}
+	<div class="foreign_message">
+		<div style="float:left; width: 9%; margin: 0px; text-align: center;">
+			<a href="/group/{{group.name}}">
+				{% if group.pic %}
+					<img style ="width: auto; height : auto; max-height: 80px; max-width: 100%;" src="{{url_for('thumbnails', filename=group.pic)}}" width="30%">
+				{% else %}
+					<img src="{{url_for('thumbnails', filename='no_such')}}" width="30%">
+				{% endif %}
+			</a>
+		</div>
+		<div>
+			<span style="font-size: 20px; color: #C40A70">{{group.name}}</span><br>
+			{{group.description}}<br>
+		</div>
+	</div>
+	{% endfor %}
+</div>
+{#
+{% if pages_count %}
+{% if not nick %}
+<div>
+	{{_('Pages')}} {{page}} {{_('of')}} {{pages_count}} <br>
+	{% for p in [-5,-4,-3,-2,-1] %}
+		{% if p+page >= 0 %}
+			<a href="/photogallery?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% for p in [1,2,3,4,5] %}
+		{% if p+page <= pages_count %}
+			<a href="/photogallery?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% if pages_count > 9 %}
+		<a href="/photogallery?page={{pages_count}}">{{_('last')}}</a><br>
+	{% endif %}
+	{% if page %}
+	<a href="/photogallery?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% else %} 
+	<a class ="disabled" href="/photogallery?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% endif %}
+	<a href="/photogallery?page={{page+1}}">{{_('Forward')}}&gt;</a>
+</div>
+{% else %}
+<div>
+	{{_('Pages')}} {{page}} {{_('of')}} {{pages_count}} <br>
+	{% for p in [-5,-4,-3,-2,-1] %}
+		{% if p+page >= 0 %}
+			<a href="/photogallery/{{nick}}?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% for p in [1,2,3,4,5] %}
+		{% if p+page <= pages_count %}
+			<a href="/photogallery/{{nick}}?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% if pages_count > 9 %}
+		<a href="/photogallery/{{nick}}?page={{pages_count}}">{{_('last')}}</a><br>
+	{% endif %}
+	{% if page %}
+	<a href="/photogallery/{{nick}}?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% else %} 
+	<a class ="disabled" href="/photogallery/{{nick}}?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% endif %}
+	<a href="/photogallery/{{nick}}?page={{page+1}}">{{_('Forward')}}&gt;</a>
+</div>
+{% endif %}
+{% endif %}
+#}
+{% endblock %}

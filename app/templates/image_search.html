@@ -1,0 +1,37 @@
+{% extends "basesocial.html" %}
+{% block menutop %}
+<div class="menu-top">
+	<h1>{{_('Search photo')}}</h1>
+</div>
+{% endblock %}
+{% block body %}
+<br>
+{% autoescape true %}
+	<h2>{{_('Photo search filter')}}</h2>
+	<form name="image_search" action="" method="get">
+		{{_('tags')}} {{form.tags(placeholder="#tag1 #tag2")}}<br>
+		{{_('camera model')}} {{form.camera_model}}<br>
+		{{_('lens model')}} {{form.lens_model}}<br>
+		{{_('iso from')}} {{form.iso_from}}{{_('to iso')}} {{form.iso_to}}<br>
+		{{_('size')}} {{form.size}}<br>
+		{{form.submit}} {{form.clear}}
+	</form>
+<h2>{{_('Photos')}} {{_('Total')}} - {{photos_count}}</h2>
+{% for exif in exifs %}
+{% if (loop.index-1) % 5 == 0 %}
+<div style="clear:both;"></div>
+{% endif %}
+	<div style="width: 20%; float:left; text-align: center; height: 100%;">
+		{#<a href="{{url_for('upload', filename=exif.photo.filename)}}">#}
+		{% if not camera or not lens %}
+		<a href="/search_images/virtual_gallery/select/select/{{iso_from}}/{{iso_to}}/{{size}}/{{tags|safe}}/{{loop.index-1}}">
+		{% else %}
+		<a href="/search_images/virtual_gallery/{{camera}}/{{lens|escape_slashes}}/{{iso_from}}/{{iso_to}}/{{size}}/{{tags|safe}}/{{loop.index-1}}">
+		{% endif %}	
+			<img style="width: auto; height: auto; max-height: 200px; max-width: 100%;" src="{{url_for('thumbnails', filename=exif.photo.filename)}}" width="100%">
+		</a>
+	</div>
+{% endfor %}
+<div style="clear:both;"></div>
+{% endautoescape %}
+{% endblock %}

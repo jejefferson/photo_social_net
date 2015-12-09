@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block uninherit_script %}
+<link rel="stylesheet" href="{{ url_for('static', filename='jquery-ui.css') }}">
+<script type="text/javascript" src="{{url_for('static', filename='jquery-1.7.1.min.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static', filename='messages_count.js') }}"></script>
+{% endblock %}
+{% block script %}
+{% endblock %}
+{% block css_include %}
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}
+{% block content %}
+{% block menutop %}
+{% endblock %}
+<div>
+<div class="sphinxsidebarwrapper" style="position: fixed">
+	<a style="display: block;
+				float: left;
+				width: 75%;
+				height: 20px;
+				background: #4E9CAF;
+				padding: 0px;
+				margin: 10px;
+				margin-top: 20px;
+				margin-bottom: 10px;
+				text-align: center;
+				border-radius: 5px;
+				color: white;
+				background: -webkit-gradient(linear, left top, left bottom, from(#4E9CAF), to(#336F7E));
+				background: -moz-linear-gradient(top,  #4E9CAF,  #336F7E);" href="/profile">{{_('My profile')}}</a>
+	<a style="display: block;
+				float: left;
+				margin-bottom: 20px;
+				height: 20px;
+				background: #4E9CAF;
+				padding: 0px;
+				margin-top: 20px;
+				margin-bottom: 10px;
+				text-align: center;
+				border-radius: 5px;
+				color: white;
+				font-size: 80%;
+				background: -webkit-gradient(linear, left top, left bottom, from(#4E9CAF), to(#336F7E));
+				background: -moz-linear-gradient(top,  #4E9CAF,  #336F7E);" href="/modprofile">{{_('Edit')}}</a>
+	<a class="button clear" href="/news">{{_('News')}}</a>
+	<a class="button" id="messages" href="/messages">{{_('Messages')}} {% if msg_count %}|{{msg_count}}|{% endif %}</a>
+	<a class="button" href="/photogallery">{{_('Photo galleries')}}</a>
+	<a class="button" href="/friends">{{_('Friends')}}</a>
+	<a class="button" href="/people">{{_('People')}}</a>
+	<a class="button" href="/groups">{{_('Groups')}}</a>
+</div>
+	<div id="sound"></div>
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+			  {% block body %}
+			  {% endblock %}
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+      </div>
+
+    <div class="footer">
+    Je web-studio 2017
+    </div>
+{% endblock %}
+{% block navigation %}
+{% endblock %}

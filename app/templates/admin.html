@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Recent registered Users| {{users_count}} total</h1>
+<table class="gradienttable">
+<tr>
+{% for user in users %}
+{% if (loop.index-1) % 10 == 0 %}
+<tr>
+{% endif %}
+<td><a href="/admin/userinfo/{{user.nickname}}">{{user.nickname}}</a></td>
+{% endfor %}
+</tr>
+</table>
+<h1>Recent uploaded Files | {{files_count}} total</h1>
+<table class="gradienttable">
+<tr>
+{% for file in files %}
+{% if (loop.index-1) % 2 == 0 %}
+<tr>
+{% endif %}
+<td><a href="/admin/fileinfo/{{file.filename}}">{{file.filename}}{% if not file.size %}<font color="red"> delete {% endif %}</font></a></td>
+{% endfor %}
+</table>
+{% endblock %}
+{% block navigation %}
+<span class="navigation" style="position: absolute; top: 500px; left: 20px;">
+<form action="" name="page" method="get">
+</form>
+{% if page %}
+<a href="admin?page={{page-1}}"><В начало</a>
+{% else %} 
+<a class ="disabled" href="/friends/?page={{page-1}}">&lt;В начало</a>
+{% endif %}
+<a href="admin?page={{page+1}}">В конец&gt;</a>
+</span>
+<span class="navigationbase" style="position: absolute; top: 550px; left: 20px;">
+	<script>
+		document.write('<a href="' + document.referrer + '"><img src="{{url_for("static", filename="back.png")}}"></a>');
+	</script>
+</span>
+{% endblock%}

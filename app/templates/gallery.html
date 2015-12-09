@@ -1,0 +1,104 @@
+{% extends "basesocial.html" %}
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='addphoto-bar.js')}}"></script>
+{% endblock %}
+{% block menutop %}
+<div class="menu-top">
+	<ul class="tabrow">
+		<li>
+			<a href="/profile">{{_('My profile')}}</a>
+		</li>
+		{% if not guest %}
+		<li>
+			<a href="/photogallery">/ {{_('Your photo galleries')}}</a>
+		</li>
+		{% else %}
+			<li>
+			{% if friend %}
+				<a href="/friends">/ {{_('Friends')}}</a>
+			{% else %}
+				<a href="/people">/ {{_('People')}}</a>
+			{% endif %}
+			</li>
+			<li>
+				<a href="/profile/{{gallery.author}}">/ {{gallery.author}}</a>
+			</li>
+			<li>
+				<a href="/photogallery/{{gallery.author}}">/ {{_('Photo galleries')}}</a>
+			</li>
+		{% endif %}
+		<li>
+			<a href="/gallery/{{gallery.id}}">/ {{gallery.name}}</a>
+		</li>
+	</ul>
+</div>
+{% endblock %}
+{% block body %}
+<div id="addphoto-bar">
+{% if not guest %}
+	<div style="float: left; width:50%">
+		<h2>{{_('Add photo')}}</h2>
+		<form name="add_photo" action="" method="post" enctype=multipart/form-data>
+			{{form.hidden_tag()}}
+			{{form.new_photo(id="addfile", multiple=True, title=gettext('You may select one or several files for upload'))}} {{form.submit(title=gettext('Send files to server'))}}
+		</form>
+	</div>
+	{% endif %}
+	<div style="float: left;">
+		<h2>{{_('Summary info')}}</h2>
+		<p>{{_('Author')}} - {{gallery.author}}<br>
+		{{_('Name')}} - {{gallery.name}}<br>
+		{{_('Info')}} - {{gallery.info}}<br>
+		{{_('Created at')}} - {{gallery.upload_date}}<br>
+		{{_('Shooting Location')}} - {{gallery.location}}</p>
+	</div>
+</div>
+<div style="clear:both; text-align: center; ">
+	<a href="#" id="press_addfile" style="display: none;">Open file dialog</a>
+	<div id="switch-bar" class="triangle-down" title="{{_('add/info')}}">
+	</div>
+</div>
+
+<h2>{{_('Photos')}}</h2>
+{% for photo in photos %}
+{% if (loop.index-1) % 5 == 0 %}
+<div style="clear:both;"></div>
+{% endif %}
+	<div style="width: 20%; float:left; text-align: center; height: 100%;">
+		{% if not tag %}
+		<a href="/gallery/{{gallery.id}}/{{loop.index-1+(page*50)}}">
+		{% else %}
+		<a href="/gallery/{{gallery.id}}/{{photo.offset}}">
+		{% endif %}
+			<img style="width: auto; height: auto; max-height: 200px; max-width: 100%;" src="{{url_for('thumbnails', filename=photo.filename)}}" width="100%">
+		</a>
+	</div>
+{% endfor %}
+<div style="clear:both;"></div>
+{% if pages_count %}
+<div>
+	{{_('Pages')}} {{page}} {{_('of')}} {{pages_count}} <br>
+	{% for p in [-5,-4,-3,-2,-1] %}
+		{% if p+page >= 0 %}
+			<a href="/gallery/{{gallery.id}}?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	<span style="background: #5CA1E0">{{page}}</span>
+	{% for p in [1,2,3,4,5] %}
+		{% if p+page <= pages_count %}
+			<a href="/gallery/{{gallery.id}}?page={{p+page}}">{{p+page}}</a>
+		{% endif %}
+	{% endfor %}
+	{% if pages_count > 9 %}
+		<a href="/gallery/{{gallery.id}}?page={{pages_count}}">{{_('last')}}</a><br>
+	{% endif %}
+	<br>
+	{% if page %}
+	<a href="/gallery/{{gallery.id}}?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% else %} 
+	<a class ="disabled" href="/gallery/{{gallery.id}}?page={{page-1}}">&lt;{{_('Back')}}</a>
+	{% endif %}
+	<a href="/gallery/{{gallery.id}}?page={{page+1}}">{{_('Forward')}}&gt;</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,86 @@
+<a id="download" class="button-noblock" download href="{{url_for('upload', filename = photo.filename)}}">{{_('download')}}</a>
+{% if not guest %}
+<div>
+	<form style="display:inline" name="delete_photo" action="/delfile/{{photo.file_id}}" method="post">
+		<input type="submit" name="delete_gallery" value="{{_('delete photo')}}" />
+	</form>
+	<form style="display:inline" name="rotate_photo_left" action="/rotateimage/{{photo.file_id}}/0" method="post">
+		<input type="submit" name="delete_gallery" value="{{_('rotate clockwise')}}" />
+	</form>
+	<form style="display:inline" name="rotate_photo_right" action="/rotateimage/{{photo.file_id}}/1" method="post">
+		<input type="submit" name="delete_gallery" value="{{_('rotate counter-clockwise')}}" />
+	</form>
+	{#
+	<a href="/delfile/{{photo.file_id}}">{{_('delete photo')}}</a>
+	<a href="/rotateimage/{{photo.file_id}}/0">{{_('rotate clockwise')}}</a>
+	<a href="/rotateimage/{{photo.file_id}}/1">{{_('rotate counter-clockwise')}}</a>
+	#}
+</div>
+
+{% endif %}
+<div style="width: 20%; float: left;">
+	<h2>{{_('Add comment')}}</h2>
+	<form name="add_comment" action="" method="post">
+		{{form.hidden_tag()}}
+		{{_('Comment')}}: {{form.comment}}<br>
+		{{_('Add')}}: {{form.submit}}
+	</form>
+</div>
+{% if photo.exif %}
+<div style="margin-left: 20px; float:left;">
+	<h2>{{_('Exif data')}}</h2>
+	<table style="text-align: left;">
+	<tr><th>{{_('Camera model')}}:</th><td>{{photo.exif.model|check_null}}</td><th>{{_('Lens')}}:</th><td>{{photo.exif.lens_model|check_null}}</td></tr>
+	<tr><th>{{_('Resolution')}}:</th>
+		{% if photo.exif.width %}
+		<td>{{photo.exif.width}}x{{photo.exif.height}}</td>
+		{% else %}
+		<td>{{_('no info')}}</td>
+		{% endif %}
+		<th>{{_('Shot date')}}:</th><td>{{photo.exif.date|check_null}}</td></tr>
+	<tr><th>{{_('ExposureTime')}}:</th>
+		{% if photo.exif.exposure_divident %}
+		<td>{{photo.exif.exposure_divident}}/{{photo.exif.exposure_divisor}} {{_('sec')}}</td>
+		{% else %}
+		<td>{{_('no info')}}</td>
+		{% endif %}
+		<th>{{_('FNumber')}}:</th><td>{% if photo.exif.fnumber %} f/{% endif %}{{photo.exif.fnumber|check_null}}</td></tr>
+	<tr><th>{{_('ISO')}}:</th><td>{{photo.exif.iso|check_null}}</td><th>{{_('Focal length')}}:</th><td>{{photo.exif.focallength|check_null}} {% if photo.exif.focallength %} {{_('mm')}} {% endif %}</td></tr>
+	<tr><th>{{_('Flash')}}:</th><td>{{photo.exif.flash|interpret_flash|check_null}}</td></tr>
+	</table>
+</div>
+
+{% endif %}
+<div style="clear:both;"></div>
+<h2>{{_('Comments')}}</h2>
+{% if not guest %}
+<div style="text-align: right">
+	<form name="delcomment_all" action="/delcomment_all/{{photo.file_id}}" method="post">
+		<input type="submit" name="delete" value="{{_('delete all')}}" />
+	</form>
+	{#<a class="button-noblock" align="right" href="/delcomment_all/{{photo.file_id}}">
+		{{_('delete all')}}
+	</a>#}
+</div>
+{% endif %}
+<div class="messages-box">
+	{% for comment in comments %}
+	<div class="message">
+		{{comment.date|timezoned}} {{comment.author}}&gt; {{comment.body}}
+		<div style="text-align:right">
+			{% if comment.author == nickname or photo.file_author == nickname %}
+			<form style="display:inline;" name="delcomment_from_author" action="/delcomment/{{comment.id}}" method="post">
+				<input type="submit" name="deletecomment" value="{{_('delete')}}" />
+			</form>
+			<form style="display:inline;" name="delcomment_from_author" action="/delcomment_from_author/{{comment.id}}" method="post">
+				<input type="submit" name="deletecomment" value="{{_('delete all from author')}}" />
+			</form>
+			{#
+			<a class="button-noblock" align="right" href="/delcomment_from_author/{{comment.id}}">{{_('delete all from author')}}</a>
+			<a class="button-noblock" align="right" href="/delcomment/{{comment.id}}">{{_('delete')}}</a>
+			#}
+			{% endif %}
+		</div>
+	</div>
+	{% endfor %}
+</div>

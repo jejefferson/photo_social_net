@@ -1,0 +1,19 @@
+function formfocus() {
+		document.getElementById("form-message").focus();
+		var elem = document.getElementById('textfield');
+		elem.scrollTop = elem.scrollHeight;
+}
+
+function testajax() {
+    $.post('/testajax', function(data) {
+    }).done(function(hello) {
+		$(".textfield").append(hello['text']);
+		formfocus();
+    }).fail(function() {
+        $(destId).text("{{ _('Error: Could not contact server.') }}");
+        $(loadingId).hide();
+        $(destId).show();
+    });
+}
+
+setInterval(testajax, 1050);

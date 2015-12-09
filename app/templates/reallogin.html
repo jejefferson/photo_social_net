@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{_('Social network 9600')}}</h1>
+<div class="register_field">
+	<form action="" method="post" name="login">
+		{{form.hidden_tag()}}
+		<div style="color: white;" align="center">
+			{{_('Please enter your name')}}:<br>
+			{{form.nickname(style="width: 70%;", autofocus=true, placeholder="Имя")}}<br><br>
+			{{_('Your password')}}:<br>
+			{{form.password(style="width: 70%;", placeholder="Пароль")}}<br><br>
+			{{_('Your email')}}: <br>
+			{{form.email(style="width: 70%;", placeholder="Е-маил")}}
+			{#<p>
+				{% for error in form.captcha.errors %}
+					{{ error }}
+				{% endfor %}
+				{{form.captcha}}
+			</p>#}
+			<p>
+				<input type="submit" value="{{_('Register')}}" style="width: 150px; height: 35px; border-radius: 15px; -moz-border-radius: 15px; -webkit-border-radius: 15px;">
+			</p>
+		</div>
+			<div align="right" style="padding-right: 10px;"><a style="color: #5493E5;" href="/sign">{{_('Sign in')}}</a></div>
+	</form>
+</div>
+{% endblock %}

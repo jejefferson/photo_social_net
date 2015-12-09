@@ -1,0 +1,59 @@
+{% for message in messages %}
+			{% if message.msg_author == nickname %}
+			<div align="left">
+				<div class="my_message">
+			{% else %}	
+			<div align="right">
+				<div class="foreign_message">
+			{% endif %}			
+						<div style="float:left; width: 20%; margin: 5px; text-align: center; word-wrap: break-word;">
+							{% if message.msg_author == nickname %}
+							<img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%">
+							{% elif private %}
+							<a href="/profile/{{message.msg_author}}"><img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%"></a>
+							{% else %}
+							<a href="/messages/{{message.msg_author}}"><img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%"></a>
+							{% endif %}
+							{{message.msg_author}}
+						</div>
+						<div style="margin 5px;">
+							<span style="white-space: pre-wrap">{{message.body}}</span>
+						</div>
+						<div>
+						{% if message.attachment %} {# legacy #}
+							{% if message.attachment|file_is_image %}
+								<a href={{url_for('upload', filename = message.attachment)}}>
+									<img src="{{url_for('thumbnails', filename = message.attachment)}}" width="90%">
+								</a>
+							{% else %}
+								<a href={{url_for('upload', filename = message.attachment)}}>{{message.attachment}}</a>
+							{% endif %}
+						{% endif %}
+						{% if message.attachments.all() %}
+							{% for attachment in message.attachments.all() %}
+								{% if not attachment.filename|file_is_image %}
+									<a href={{url_for('upload', filename = attachment.filename)}}>{{attachment.filename}}</a>
+								{% endif %}
+							{% endfor %}								
+							{% for attachment in message.attachments.all() %}
+								{% if attachment.filename|file_is_image %}
+									{% if (loop.index-1) % 5 == 0 %}
+										<div style="clear:both;"></div>
+									{% endif %}
+									<div style="width: 20%; float:left; text-align: center; height: 100%;">
+										<a href={{url_for('upload', filename = attachment.filename)}}>
+											<img src="{{url_for('thumbnails', filename = attachment.filename)}}" width="90%">
+										</a>
+									</div>
+								{% endif %}
+							{% endfor %}
+							<div style="clear:both;"></div>
+						{% endif %}
+						</div>
+					<div style="clear:both;text-align:right;">
+						<form action="/delmessage/{{message.msg_id}}" method="post" name="delete">
+						{{_('To:')}} {{message.msg_dest}} - {{message.timestamp|timezoned}} <input id="delete" name="delete" type="submit" value="delete"></form>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
