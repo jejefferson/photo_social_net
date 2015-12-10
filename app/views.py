@@ -612,6 +612,7 @@ def _add_message(msg_author, msg_dest, msg_type, msg_body, uploaded_files, group
 	else:
 		tags = None
 		msg = msg_body
+	#app.logger.info('dest is: %s' % msg_dest)
 	if msg_type == 'private':
 		if not len(msg_dest):
 			flash(gettext('You need fill destination field'))

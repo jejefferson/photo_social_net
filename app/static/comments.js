@@ -232,6 +232,7 @@ function postPrivateMessage(event) {
 	else {
 		msg_dest = msg_dest[1];
 	}
+	msg_dest = decodeURIComponent(msg_dest)
 	if (files) {
 		$.each(files, function(key, value) {
 			data.append(value.name, value);
