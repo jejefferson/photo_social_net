@@ -19,8 +19,8 @@
 	  <div class="back">
 		  <div class="main_navigation">
 				<form action="/logout" name="logout" type="submit" method="post">
-						<a href="/kino">{{_('Entertainment')}}</a> | <a href="/chat">{{_('Chat')}}</a> | <a href="/upload">{{_('File-exchange')}}</a> | <a href="/admin">{{_("Admin's panel")}}</a> | {% if nickname %} <a id="profile" href="/profile" style="color: #D400A4;">{{nickname}}</a>{% else %} Guest {% endif %}
-						<input type="submit" {% if not nickname %} disabled {% endif %} name="logout" value="logout" style="background-image: url({{url_for('static', filename='logout2.png')}}); border: solid 1px #FFFFFF; color:#FFFFFF; cursor: pointer;">
+						<a href="/kino">{{_('Entertainment')}}</a> | <a href="/chat">{{_('Chat')}}</a> | <a href="/upload">{{_('File-exchange')}}</a> | <a href="/admin">{{_("Admin's panel")}}</a> | {% if nickname %} <a id="profile" href="/profile" style="color: #D400A4;">{{nickname}}</a>{% else %} <a href="/sign">Guest</a>{% endif %}
+						{% if nickname %} <input type="submit" name="logout" value="logout" style="background-image: url({{url_for('static', filename='logout2.png')}}); border: solid 1px #FFFFFF; color:#FFFFFF; cursor: pointer;"> {% endif %}
 					</form>
 			</div>
 	  <div class="fullpage">
