@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2014-11-04 20:53+0600\n"
-"PO-Revision-Date: 2014-11-04 20:54+0500\n"
+"PO-Revision-Date: 2015-12-28 21:29+0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: ru <LL@li.org>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
@@ -82,7 +82,7 @@ msgstr "Ошибка, нет такого пользователя"
 
 #: app/views.py:208
 msgid "User with this email already exist!"
-msgstr "Пользователь с таким именем уже существует!"
+msgstr "Указанный email уже используется, пожалуйста, укажите другой."
 
 #: app/views.py:215
 msgid "Registration successfull!"

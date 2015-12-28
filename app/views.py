@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 from app import app
+import core_api
+from app.exceptions import *
 import flask
 from flask import render_template, flash, redirect, session, request, url_for, send_from_directory,\
 		make_response, get_flashed_messages, g
@@ -141,21 +143,6 @@ def _validate_page(page, pages_count):
 	except ValueError: page = 0
 	return page
 
-def _truncate_tags(message):
-	if message:
-		res = message.split(' ')
-		tags = []
-		for each in res:
-				if each.startswith('#'):
-						tags.append(each)
-				else:
-						break
-		res = filter(lambda x: x not in tags, res)
-		tags = map(lambda x: x.strip('#'), tags)
-		return (tags, ' '.join(res))
-	else:
-		return None
-
 def login_required(f):
 	@wraps(f)
 	def decorated_function(*args, **kwargs):
@@ -177,24 +164,6 @@ def showAfisha():
 	return render_template('kino.html', films = films, times = timetable,\
 			title = 'Megafilm', vs = timetable.values(), last_req = last_req, nickname = session.get('nickname'))
 
-@app.route('/login', methods = ['GET', 'POST'])
-def login():
-	form = LoginForm()
-	if form.validate_on_submit():
-		user = models.User.query.filter_by(nickname=form.text.data).first()
-		if user:
-			post = models.Message(body = form.message.data, msg_author = user.nickname, timestamp = datetime.datetime.utcnow())
-			db.session.add(post)
-			db.session.commit()
-		else:
-			flash(gettext('An error occured! No suck unsername'))
-		return redirect('/login')
-	if 'logo' in session:
-		form.show_logo.data = not session.get('logo')
-	else: session['logo'] = True
-	return render_template('login.html', title = "Sign In", form = form, logo = session['logo'],\
-	messages = db.session.query(models.Message).order_by(desc(models.Message.timestamp)))
-
 @app.route('/reallogin', methods = ['GET', 'POST'])
 def reallogin():
 	form = RealLogin()
@@ -202,21 +171,18 @@ def reallogin():
 		nickname = form.nickname.data
 		password = form.password.data
 		email = form.email.data
-		if not len(db.session.query(models.User.nickname).filter(models.User.nickname == nickname).all()):
-		#if nickname not in db.session.query(models.User.nickname).filter(models.User.nickname == nickname).first():
-			if email in [u.email for u in models.User.query.all()]: #todo: переписать
-				flash(gettext('User with this email already exist!'))
-				return redirect('/reallogin')
-			db.session.add(models.User(nickname = nickname, password = password, email = email, role = models.ROLE_USER, \
-							registration_data = datetime.datetime.utcnow(), language = 'en',\
-							user_pic = app.config['DEFAULT_USERPIC']))
-			db.session.commit()
+		try:
+			core_api.register_new_user(nickname=nickname, password=password, email=email)
 			session['nickname'] = nickname
 			flash(gettext('Registration successfull!'))
 			return redirect('/sign')
-		else:
+		except EmailAlreadyUsed:
+			flash(gettext('User with this email already exist!'))
+			return redirect('/reallogin')
+		except AlreadyRegistered:
 			flash(gettext('User already exitst!'))
-	return render_template('reallogin.html', form = form, title = 'registration', nickname = session.get('nickname'))
+			return redirect('/reallogin')
+	return render_template('reallogin.html', form=form, title='registration', nickname=session.get('nickname'))
 	
 @app.route('/chat', methods = ['GET', 'POST'])
 @login_required
@@ -227,16 +193,12 @@ def chat():
 	form = PostForm(prefix='form')
 	if form.validate_on_submit():
 		message = form.message.data
-		user = models.User.query.filter_by(nickname=session['nickname']).first()
+		user = core_api.get_user_by_nick(session['nickname'])
 		if user:
-			post = models.Message(body = form.message.data, msg_author = user.nickname, msg_type = 'chat',\
-					timestamp = datetime.datetime.utcnow())
-			db.session.add(post)
-			db.session.commit()
+			core_api.add_message(msg_author=user.nickname, msg_dest=None, msg_type='chat',\
+				msg_body=form.message.data)
 			return redirect('/chat')
-	messages = db.session.query(models.Message).filter(models.Message.msg_type == 'chat').\
-		order_by(desc(models.Message.msg_id)).limit(50).all()
-	messages.reverse()
+	messages = core_api.get_last_chat_messages(50)
 	#online_users.extend([u'петя',u'вася',u'коля',u'паша',u'дима',u'маша',u'даша',u'вероника',u'азаза',u'за',u'за',u'за',u'заза',u'заза',u'зааз',u'азаз',u'азаз',u'азаз',u'заза',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'зазаазаз'])
 	return render_template('chat.html', form = form, messages = messages, nickname = session.get('nickname'), \
 				online_users = online_users, title = 'chat')
@@ -246,10 +208,8 @@ def ajax_post_to_chat():
 	nickname = session.get('nickname')
 	message = request.form.get('msg_body')
 	if message:
-		app.logger.info("ajax, message from js: %s" % message)
-		post = models.Message(body=message, msg_author=nickname, msg_type='chat', timestamp=datetime.datetime.utcnow())
-		db.session.add(post)
-		db.session.commit()
+		post = core_api.add_message(msg_author=nickname, msg_dest=None, msg_type='chat',\
+			msg_body=message)
 		rend_message = render_template("chat_message.html", message = post)
 		return jsonify({"message": rend_message})
 	else:
@@ -546,35 +506,6 @@ def usermodprofile():
 	return render_template('modprofile.html', form = form, nickname = session.get('nickname'),\
 				userpic_path = userpic_path, title = 'change your info')
 
-def _add_all_attachments(message, uploaded_files, private = False):
-	for message_file in uploaded_files:
-		if not message_file.filename:
-			continue
-		if isinstance(message, models.PhotoGallery):
-			if message_file.mimetype not in IMAGES:
-				continue
-				flash(gettext('You may download only images in gallery'))
-		filename = os.path.basename(message_file.filename)
-		filename = datetime.datetime.utcnow().strftime('%y.%m.%d_%H:%M:%S_') + filename
-		access = 'private' if private else 'public'
-		if not len(db.session.query(models.UploadedFile.filename).filter(models.UploadedFile.filename == filename).all()):
-			app.logger.info(sys.getfilesystemencoding())
-			app.logger.info(filename)
-			message_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-			exif = None
-			if file_is_image(filename):
-				save_thumb(filename)
-				exif = _get_exif(filename)
-			if isinstance(message, models.Message):
-				message = message.add_file(models.UploadedFile(file_author = session.get('nickname'), filename = filename,\
-						access = access, exif = exif, mimetype = message_file.content_type,\
-						upload_data = datetime.datetime.utcnow()))
-			elif isinstance(message, models.PhotoGallery):
-				message = message.add_photo(models.UploadedFile(file_author = session.get('nickname'), filename = filename,\
-						access = access, exif = exif, mimetype = message_file.content_type,\
-						upload_data = datetime.datetime.utcnow()))
-	return message
-
 def _add_comment_to_message(pmessage_id, msg_author, msg_body, uploaded_files):
 	parent_message = models.Message.query.filter_by(msg_id = pmessage_id).first()
 	if not parent_message:
@@ -606,40 +537,7 @@ def _add_comment_to_message(pmessage_id, msg_author, msg_body, uploaded_files):
 	db.session.commit()
 	return message
 
-def _add_message(msg_author, msg_dest, msg_type, msg_body, uploaded_files, group_id=None):
-	if msg_type == 'blog' and msg_body:
-		tags, msg = _truncate_tags(msg_body)
-	else:
-		tags = None
-		msg = msg_body
-	#app.logger.info('dest is: %s' % msg_dest)
-	if msg_type == 'private':
-		if not len(msg_dest):
-			flash(gettext('You need fill destination field'))
-			return None
-		if msg_dest == msg_author:
-			flash(gettext('You can not send message to myself'))
-			return None
-		if not len(db.session.query(models.User.nickname).filter(models.User.nickname == msg_dest).all()):
-			flash(gettext('No such username, you should specify a real user name'))
-			return None
-	uploaded_files = [filex for filex in uploaded_files if filex.filename]
-	if not msg and not uploaded_files:
-		flash(gettext('So where your message?'))
-		return None
-	message = models.Message(body=msg, msg_author=msg_author, msg_dest=msg_dest, msg_type=msg_type,\
-				timestamp=datetime.datetime.utcnow(), del_from_author=False, del_from_dest=False, group_id=group_id)
-	db.session.add(message)
-	if uploaded_files:
-		message = _add_all_attachments(message, uploaded_files)
-	db.session.commit()
-	if msg_type == 'blog' and tags:
-		for tag in tags:
-			q,w = message.add_tag(models.Tag(entity=tag))
-			if q: db.session.add(w)
-			else: db.session.execute(w)
-	db.session.commit()
-	return message
+
 
 @app.route('/delprofile', methods = ['POST'])
 @login_required
@@ -698,7 +596,7 @@ def userprofile(nick, message_id):
 		msg_dest = nick if nick else session.get('nickname')
 		msg_type = 'blog'
 		uploaded_files = request.files.getlist('form-message_file')
-		message = _add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='blog', msg_body=msg_body,
+		message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='blog', msg_body=msg_body,
 			uploaded_files=uploaded_files)
 		if not message:
 			red_url = ('/profile/%s' % nick) if nick else '/profile'
@@ -750,7 +648,7 @@ def profile_messages():
 		msg_dest = form.message_dest.data
 		msg_body = form.message_body.data
 		uploaded_files = flask.request.files.getlist('message_file')
-		message = _add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='private', msg_body=msg_body,
+		message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='private', msg_body=msg_body,
 			uploaded_files=uploaded_files)
 		if message:
 			return redirect('/messages/%s' % msg_dest)
@@ -790,7 +688,7 @@ def private_messages(nick):
 		msg_dest = nick
 		msg_body = form.message_body.data
 		uploaded_files = flask.request.files.getlist('message_file')
-		message = _add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='private', msg_body=msg_body,
+		message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='private', msg_body=msg_body,
 			uploaded_files=uploaded_files)
 		return redirect(redirect_url())
 	else:
@@ -1590,10 +1488,8 @@ def add_file_to_message(message_id):
 		return redirect(redirect_url())
 	access = message.msg_type == 'private'
 	uploaded_files = flask.request.files.getlist('new_file')
-	if uploaded_files:	
-		message = _add_all_attachments(message, uploaded_files, access)
-	db.session.add(message)
-	db.session.commit()
+	if uploaded_files:
+		core_api.update_message_attachments(message, uploaded_files, access)
 	return redirect(redirect_url())
 	
 @app.route('/ajax/post_message', methods=['POST'])
@@ -1606,7 +1502,7 @@ def ajax_post_message():
 	uploaded_files = request.files.values()
 	is_group = request.form.get('is_group') == 'true';
 	msg_type = 'group' if is_group else 'blog'
-	message = _add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type=msg_type, msg_body=msg_body,
+	message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type=msg_type, msg_body=msg_body,
 			uploaded_files=uploaded_files)
 	if not message:
 		errors = get_flashed_messages()
@@ -1637,7 +1533,7 @@ def ajax_post_private_message():
 	msg_dest = request.form.get('msg_dest')
 	msg_body = request.form.get('message')
 	uploaded_files = request.files.values()
-	message = _add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='private', msg_body=msg_body,
+	message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='private', msg_body=msg_body,
 		uploaded_files=uploaded_files)
 	if not message:
 		errors = get_flashed_messages()
@@ -1732,7 +1628,7 @@ def group(name, message_id):
 			msg_author = session.get('nickname')
 		app.logger.info('msg_author is: %s' % msg_author)
 		app.logger.info('type of: %s' % type(msg_author))
-		message = _add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='group', msg_body=msg_body,
+		message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='group', msg_body=msg_body,
 			group_id=group.id, uploaded_files=uploaded_files)
 		if not message:
 			return redirect(redirect_url())
