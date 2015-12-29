@@ -3,3 +3,6 @@
 
 class AlreadyRegistered(Exception): pass
 class EmailAlreadyUsed(Exception): pass
+class DestinationError(Exception): pass
+class NoSuchUser(Exception): pass
+class NoMessageBody(Exception): pass

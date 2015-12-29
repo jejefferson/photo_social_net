@@ -32,6 +32,7 @@ from flask import jsonify
 import urllib2
 from functools import wraps
 import sys
+import utils
 
 try:
 	from uwsgidecorators import timer
@@ -79,8 +80,6 @@ class MyIntConverter(BaseIntConverter):
 
 app.url_map.converters['myint'] = MyIntConverter
 
-IMAGES = ['image/png', 'image/jpeg', 'image/gif', 'image/bmp']
-
 @babel.localeselector
 def get_locale():
 	user_locale = session.get('user_locale')
@@ -99,39 +98,14 @@ def allowed_file(filename, ext=[]):
 	return '.' in filename and \
 		filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
-def humansize(nbytes):
-	suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
-	if nbytes == 0: return '0 B'
-	i = 0
-	while nbytes >= 1024 and i < len(suffixes)-1:
-		nbytes /= 1024.
-		i += 1
-	f = ('%.2f' % nbytes).rstrip('0').rstrip('.')
-	return '%s %s' % (f, suffixes[i])
-
-def file_is_image(filename):
-	return filename.rsplit('.', 1)[1].lower() in ['jpg', 'jpeg', 'png', 'gif', 'bmp']
-
-def file_is_audio(filename):
-	return filename.rsplit('.', 1)[1].lower() in ['mp3', 'ogg', 'wav']
-
 def check_null(info):
 	if info: return info
 	else: return gettext('no info')
 
 app.jinja_env.filters['check_null'] = check_null
-app.jinja_env.filters['file_is_image'] = file_is_image
-app.jinja_env.filters['file_is_audio'] = file_is_audio
+app.jinja_env.filters['file_is_image'] = utils.file_is_image
+app.jinja_env.filters['file_is_audio'] = utils.file_is_audio
 
-
-def save_thumb(filename):
-	im = Image.open(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-	im.thumbnail((400, 400), Image.ANTIALIAS)
-	open(os.path.abspath(os.path.join(app.config['UPLOAD_FOLDER'], 'thumbnails/', filename)), 'a').close()
-	im.save(os.path.abspath(os.path.join(app.config['UPLOAD_FOLDER'], 'thumbnails/', filename)),\
-		'JPEG', quality=75)
-
-	
 def _validate_page(page, pages_count):
 	try:
 		if int(page) > pages_count:
@@ -195,8 +169,11 @@ def chat():
 		message = form.message.data
 		user = core_api.get_user_by_nick(session['nickname'])
 		if user:
-			core_api.add_message(msg_author=user.nickname, msg_dest=None, msg_type='chat',\
-				msg_body=form.message.data)
+			try:
+				core_api.add_message(msg_author=user.nickname, msg_dest=None, msg_type='chat',\
+					msg_body=form.message.data)
+			except NoMessageBody:
+				flash(gettext('So where your message?'))
 			return redirect('/chat')
 	messages = core_api.get_last_chat_messages(50)
 	#online_users.extend([u'петя',u'вася',u'коля',u'паша',u'дима',u'маша',u'даша',u'вероника',u'азаза',u'за',u'за',u'за',u'заза',u'заза',u'зааз',u'азаз',u'азаз',u'азаз',u'заза',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'азаз',u'зазаазаз'])
@@ -207,13 +184,13 @@ def chat():
 def ajax_post_to_chat():
 	nickname = session.get('nickname')
 	message = request.form.get('msg_body')
-	if message:
+	try:
 		post = core_api.add_message(msg_author=nickname, msg_dest=None, msg_type='chat',\
 			msg_body=message)
 		rend_message = render_template("chat_message.html", message = post)
 		return jsonify({"message": rend_message})
-	else:
-		return
+	except NoMessageBody:
+		return #TODO: change behavior for do not 502 error
 
 @app.route('/sign', methods = ['GET', 'POST'], endpoint = 'sign')
 def sign():
@@ -234,7 +211,7 @@ def sign():
 	if form.validate_on_submit():
 		nickname = form.nickname.data
 		password = form.password.data
-		user = db.session.query(models.User).filter_by(nickname =  nickname).first()
+		user = core_api.get_user_by_nick(nickname)
 		if user:
 			if password == user.password:
 				session['nickname'] = nickname
@@ -288,8 +265,8 @@ def upload_file():
 				db.session.commit()
 				file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 				form.link.data = url_for('upload', filename = filename)
-				if file_is_image(filename):
-					save_thumb(filename)
+				if utils.file_is_image(filename):
+					utils.save_thumb(filename)
 			else:
 				flash(gettext('File with this filename alredy uploaded!'))
 				flash(url_for('upload', filename = filename))
@@ -330,7 +307,7 @@ def admin_page():
 	files = models.UploadedFile.query.order_by(desc(models.UploadedFile.upload_data)).offset(page*10).limit(10).all()
 	for file in files:
 		fullpathfile = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-		if os.path.isfile(fullpathfile): file.size = humansize(os.path.getsize(fullpathfile))
+		if os.path.isfile(fullpathfile): file.size = utils.humansize(os.path.getsize(fullpathfile))
 		else: file.size = 0
 	return render_template('admin.html', users = users, files = files, title = "Admin's panel",\
 				nickname = session.get('nickname'), pages_count = pages_count, page=page, users_count = users_count,\
@@ -375,13 +352,13 @@ def fileinfo(filename):
 	fullpathfile = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 	size = 0
 	if os.path.isfile(fullpathfile):
-		size = humansize(os.path.getsize(fullpathfile))
+		size = utils.humansize(os.path.getsize(fullpathfile))
 	else:
 		size = 0
 	if request.args.get('delfile', '') == 'delete':
 		if size:
 			os.remove(fullpathfile)
-			if file_is_image(filename): 
+			if utils.file_is_image(filename): 
 				os.remove() #TODO make it
 		db.session.delete(file)
 		db.session.commit()
@@ -389,7 +366,7 @@ def fileinfo(filename):
 		return redirect(redirect_url())
 	is_image = True if (file.filename.rsplit('.')[-1].lower() in ['jpg', 'jpeg','png', 'gif']) else False
 	return render_template('fileinfo.html', title = 'fileinfo', file = file, size = size,\
-				is_image = file_is_image, nickname = session.get('nickname'))
+				is_image = utils.file_is_image, nickname = session.get('nickname'))
 
 @app.route('/modprofile', methods=['GET', 'POST'])
 @login_required
@@ -466,8 +443,8 @@ def usermodprofile():
 				userS.user_pic = filename
 				#open((os.path.join(app.config['UPLOAD_FOLDER'], filename)), 'a').close()
 				form.user_pic.data.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-				if file_is_image(filename):
-					save_thumb(filename)
+				if utils.file_is_image(filename):
+					utils.save_thumb(filename)
 		db.session.commit()
 		return redirect('/modprofile')
 	else:
@@ -531,7 +508,7 @@ def _add_comment_to_message(pmessage_id, msg_author, msg_body, uploaded_files):
 	message = models.Message(parent_id = parent_message.msg_id, body = msg_body, msg_author = msg_author,
 			reply_to=reply_to, msg_dest=msg_dest, msg_type='comment', timestamp = datetime.datetime.utcnow())
 	if uploaded_files:
-		message = _add_all_attachments(message, uploaded_files)
+		message = core_api.add_all_attachments(message, uploaded_files)
 	parent_message.add_comment(message)
 	db.session.add(parent_message)
 	db.session.commit()
@@ -570,11 +547,11 @@ def del_profile():
 @login_required
 def userprofile(nick, message_id):
 	if nick:
-		user = db.session.query(models.User).filter_by(nickname =  nick).first()
+		user = core_api.get_user_by_nick(nick)
 		if not user:
 			return redirect(redirect_url())
 	else:
-		user = db.session.query(models.User).filter_by(nickname =  session.get('nickname')).first()
+		user = core_api.get_user_by_nick(session.get('nickname'))
 	if not user:
 		flash(gettext('Bad request'))
 		return redirect('/profile')
@@ -596,9 +573,10 @@ def userprofile(nick, message_id):
 		msg_dest = nick if nick else session.get('nickname')
 		msg_type = 'blog'
 		uploaded_files = request.files.getlist('form-message_file')
-		message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='blog', msg_body=msg_body,
-			uploaded_files=uploaded_files)
-		if not message:
+		try:
+			message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='blog', msg_body=msg_body,
+				uploaded_files=uploaded_files)
+		except (NoMessageBody, NoSuchUser, DestinationError):
 			red_url = ('/profile/%s' % nick) if nick else '/profile'
 			return redirect(red_url)
 		return redirect(redirect_url()+'#%d' % message.msg_id)
@@ -642,17 +620,25 @@ def _check_online(users_list):
 @login_required
 def profile_messages():
 	form = SendMessage()
-	user = db.session.query(models.User).filter_by(nickname = session.get('nickname')).first()
+	user = core_api.get_user_by_nick(session.get('nickname'))
 	if form.validate_on_submit():
 		msg_author = user.nickname
 		msg_dest = form.message_dest.data
 		msg_body = form.message_body.data
 		uploaded_files = flask.request.files.getlist('message_file')
-		message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='private', msg_body=msg_body,
-			uploaded_files=uploaded_files)
-		if message:
+		try:
+			message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='private', msg_body=msg_body,
+				uploaded_files=uploaded_files)
 			return redirect('/messages/%s' % msg_dest)
-		return redirect(redirect_url())
+		except DestinationError:
+			flash(gettext('You need fill destination field'))
+			return redirect(redirect_url())
+		except NoSuchUser:
+			flash(gettext('No such username, you should specify a real user name'))
+			return redirect(redirect_url())
+		except NoMessageBody:
+			flash(gettext('So where your message?'))
+			return redirect(redirect_url())
 	else:
 		pass
 
@@ -678,9 +664,10 @@ def profile_messages():
 @login_required
 def private_messages(nick):
 	form = SendMessage()
-	user = db.session.query(models.User).filter_by(nickname = session.get('nickname')).first()
-	if not user:
-		return redirect('/sign')
+	user = core_api.get_user_by_nick(session.get('nickname'))
+	dest_user = core_api.get_user_by_nick(nick)
+	if not dest_user:
+		return redirect('/messages')
 	if user.nickname == nick:
 		return redirect('/messages')
 	if form.validate_on_submit():
@@ -688,9 +675,13 @@ def private_messages(nick):
 		msg_dest = nick
 		msg_body = form.message_body.data
 		uploaded_files = flask.request.files.getlist('message_file')
-		message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='private', msg_body=msg_body,
-			uploaded_files=uploaded_files)
-		return redirect(redirect_url())
+		try:
+			message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='private', msg_body=msg_body,
+				uploaded_files=uploaded_files)
+			return redirect(redirect_url())
+		except NoMessageBody:
+			flash(gettext('So where your message?'))
+			return redirect(redirect_url())
 	else:
 		pass
 	if not user:
@@ -722,7 +713,7 @@ def private_messages(nick):
 def _remove_from_disk(filename):
 	try: os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 	except: pass
-	if file_is_image(filename):
+	if utils.file_is_image(filename):
 		try: os.remove(os.path.join(app.config['UPLOAD_THUMBS_FOLDER'], filename))
 		except: pass
 
@@ -772,7 +763,7 @@ def _delete_message(id):
 
 def _delete_all_data_message(message):
 	if message.attachment: #legacy
-		if file_is_image(message.attachment):
+		if utils.file_is_image(message.attachment):
 			_delfile(message.attachment.file_id)
 	attachments = message.attachments.all()
 	if len(attachments):
@@ -933,36 +924,6 @@ def friend_photogallery(nick):
 	return render_template('photogallery.html', nick = nick, nickname = session.get('nickname'), galleries = galleries,\
 			friend = friend, pages_count = pages_count, page = page, title = gettext('photogalleries'))
 
-def _get_exif(filename):
-	img = Image.open(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-	try:
-		exif_info = img._getexif()
-	except AttributeError:
-		exif_info = None
-	if exif_info:
-		all_exif = { TAGS[k]: v for k, v in exif_info.items() if k in TAGS }
-		exp = all_exif.get('ExposureTime')
-		fnumber = None
-		fnr = all_exif.get('FNumber')
-		focallength = all_exif.get('FocalLength')
-		if focallength and focallength[1] != 0:
-			focallength = float(focallength[0])/float(focallength[1])
-		if fnr and fnr[1] != 0:
-			fnumber = float(fnr[0])/float(fnr[1])
-		exposure_divident = None
-		exposure_divisor = None
-		if exp:
-			exposure_divident = exp[0]
-			exposure_divisor = exp[1]
-		flash = all_exif.get('Flash')
-		exif = models.Exif(width = all_exif.get('ExifImageWidth'),
-			height = all_exif.get('ExifImageHeight'), iso = all_exif.get('ISOSpeedRatings'),
-			model =  all_exif.get('Model'), lens_model = all_exif.get('LensModel'), date = all_exif.get('DateTime'),
-			exposure_divident = exposure_divident, exposure_divisor = exposure_divisor, fnumber = fnumber,
-			focallength = focallength, flash = flash)
-	else: exif = None
-	return exif
-
 @app.route('/gallery/<int:id>', methods = ['GET', 'POST'])
 @login_required
 def gallery(id):
@@ -980,7 +941,7 @@ def gallery(id):
 			flash(gettext('Bad request'))
 			return redirect(redirect_url())
 		uploaded_files = flask.request.files.getlist('new_photo')
-		gallery = _add_all_attachments(gallery, uploaded_files)
+		gallery = core_api.add_all_attachments(gallery, uploaded_files)
 		db.session.commit()
 		photos_count = gallery.photos.count() - 1
 		pages_count = photos_count/50
@@ -1160,7 +1121,7 @@ def rotateimage(id, clockwise):
 		flash(gettext('Hackors not allowed'))
 		return redirect(redirect_url())
 	old_filename = photo.filename
-	if file_is_image(photo.filename):
+	if utils.file_is_image(photo.filename):
 		with wand.image.Image(filename=os.path.join(app.config['UPLOAD_FOLDER'], photo.filename)) as img:
 			with img.clone() as rotated:
 				if clockwise == 0:
@@ -1169,7 +1130,7 @@ def rotateimage(id, clockwise):
 					rotated.rotate(-90)
 				photo.filename = datetime.datetime.utcnow().strftime('%y.%m.%d_%H:%M:%S_') + photo.filename.split('_', 2)[2]
 				rotated.save(filename=os.path.join(app.config['UPLOAD_FOLDER'], photo.filename))
-		save_thumb(photo.filename)
+		utils.save_thumb(photo.filename)
 	_remove_from_disk(old_filename)
 	db.session.add(photo)
 	db.session.commit()
@@ -1379,7 +1340,7 @@ def virtual_gallery_message(message_id, offset):
 	if message.msg_type == 'private' and message.msg_author != user.nickname and message.msg_dest != user.nickname:
 		flash(gettext('Hackors not allowed!'))
 		return redirect(redirect_url())
-	req = message.attachments.filter(models.UploadedFile.mimetype.in_(IMAGES)).order_by(models.UploadedFile.file_id)
+	req = message.attachments.filter(models.UploadedFile.mimetype.in_(utils.IMAGES)).order_by(models.UploadedFile.file_id)
 	if offset > req.count()-1 or offset < 0:
 		if message.msg_type == 'blog' or message.msg_type == 'comment':
 			return redirect('profile/%s#%s' % (message.msg_dest, str(message.msg_id)))
@@ -1502,9 +1463,10 @@ def ajax_post_message():
 	uploaded_files = request.files.values()
 	is_group = request.form.get('is_group') == 'true';
 	msg_type = 'group' if is_group else 'blog'
-	message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type=msg_type, msg_body=msg_body,
+	try:
+		message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type=msg_type, msg_body=msg_body,
 			uploaded_files=uploaded_files)
-	if not message:
+	except (DestinationError, NoMessageBody, NoSuchUser):
 		errors = get_flashed_messages()
 		return jsonify({'error': errors})
 	html = render_template('message.html', messages = [message], nickname = session.get('nickname'), blog=True, ajax = True)
@@ -1533,9 +1495,10 @@ def ajax_post_private_message():
 	msg_dest = request.form.get('msg_dest')
 	msg_body = request.form.get('message')
 	uploaded_files = request.files.values()
-	message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='private', msg_body=msg_body,
-		uploaded_files=uploaded_files)
-	if not message:
+	try:
+		message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='private', msg_body=msg_body,
+			uploaded_files=uploaded_files)
+	except (NoMessageBody, NoSuchUser, DestinationError):
 		errors = get_flashed_messages()
 		return jsonify({'error': errors})
 	html = render_template('message.html', messages=[message], nickname=msg_author, blog=False)
@@ -1628,12 +1591,12 @@ def group(name, message_id):
 			msg_author = session.get('nickname')
 		app.logger.info('msg_author is: %s' % msg_author)
 		app.logger.info('type of: %s' % type(msg_author))
-		message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='group', msg_body=msg_body,
-			group_id=group.id, uploaded_files=uploaded_files)
-		if not message:
+		try:
+			message = core_api.add_message(msg_author=msg_author, msg_dest=msg_dest, msg_type='group', msg_body=msg_body,
+				group_id=group.id, uploaded_files=uploaded_files)
+		except (NoMessageBody, NoSuchUser, DestinationError):
 			return redirect(redirect_url())
-		db.session.add(message)
-		db.session.commit()
+
 		return redirect(redirect_url()+'#%d' % message.msg_id)
 	form2 = SendComment(prefix='form2')
 	if form2.validate_on_submit():
@@ -1725,8 +1688,8 @@ def edit_group(name):
 								upload_data = datetime.datetime.utcnow()))
 				group.pic = filename
 				form.pic.data.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-				if file_is_image(filename):
-					save_thumb(filename)
+				if utils.file_is_image(filename):
+					utils.save_thumb(filename)
 		db.session.add(group)
 		db.session.commit()
 	else: #fill fields
