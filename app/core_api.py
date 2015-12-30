@@ -118,8 +118,13 @@ def get_exif(filename):
 		fnumber = None
 		fnr = all_exif.get('FNumber')
 		focallength = all_exif.get('FocalLength')
-		if focallength and focallength[1] != 0:
-			focallength = float(focallength[0])/float(focallength[1])
+
+		if focallength: #there is differrence in other version of lib
+			if len(focallength) == 2:
+				if focallength[1] != 0:
+					focallength = float(focallength[0])/float(focallength[1])
+			else:
+				focallength = focallength[0]
 		if fnr and fnr[1] != 0:
 			fnumber = float(fnr[0])/float(fnr[1])
 		exposure_divident = None
