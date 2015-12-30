@@ -134,8 +134,12 @@ def get_exif(filename):
 		exposure_divident = None
 		exposure_divisor = None
 		if exp:
-			exposure_divident = exp[0]
-			exposure_divisor = exp[1]
+			if len(exp) == 2:
+				exposure_divident = exp[0]
+				exposure_divisor = exp[1]
+			else:
+				exposure_divident = exp[0] #TODO: change model field to float
+				exposure_divisor = 1
 		flash = all_exif.get('Flash')
 		exif = models.Exif(width = all_exif.get('ExifImageWidth'),
 			height = all_exif.get('ExifImageHeight'), iso = all_exif.get('ISOSpeedRatings'),
