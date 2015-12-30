@@ -125,8 +125,12 @@ def get_exif(filename):
 					focallength = float(focallength[0])/float(focallength[1])
 			else:
 				focallength = focallength[0]
-		if fnr and fnr[1] != 0:
-			fnumber = float(fnr[0])/float(fnr[1])
+		if fnr:
+			if len(fnr) == 2:
+				if fnr[1] != 0:
+					fnumber = float(fnr[0])/float(fnr[1])
+			else:
+				fnr = fnr[0]
 		exposure_divident = None
 		exposure_divisor = None
 		if exp:
