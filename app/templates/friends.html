@@ -26,8 +26,12 @@
 	{% for friend in friends %}
 	<div class="friend_record">
 		<div style="float:left; width: 10%; margin: 5px; text-align: center; word-wrap: break-word;">
-			<a href="/profile/{{friend.nickname}}"><img src="{{url_for('thumbnails', filename=friend.user_pic)}}" width="100%"></a>
-				{{friend.nickname}}
+            {% if friend.user_pic %}
+                <a href="/profile/{{friend.nickname}}"><img src="{{url_for('thumbnails', filename=friend.user_pic)}}" width="100%"></a>
+            {% else %}
+                <a href="/profile/{{friend.nickname}}"><img src={{url_for('static', filename='anon.jpg')}} width="100%" height="100%"></a>
+            {% endif %}
+            {{friend.nickname}}
 		</div>
 		<div style="margin 5px;">
 			{{friend.realname}} {{friend.user_birthday}}<br>

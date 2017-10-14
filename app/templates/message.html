@@ -16,13 +16,29 @@
 			{% endif %}		
 						<div style="float:left; width: 5%; margin: 5px; text-align: center; word-wrap: break-word;">
 							{% if blog %}
-							<a href="/profile/{{message.msg_author}}"><img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%"></a>
+                                {% if message.user.user_pic %}
+                                    <a href="/profile/{{message.msg_author}}"><img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%"></a>
+                                {% else %}
+                                    <a href="/profile/{{message.msg_author}}"><img src={{url_for('static', filename='anon.jpg')}} width="100%" height="100%"></a>
+                                {% endif %}
 							{% elif message_author %}
-							<img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%">
+                                {% if message.user.user_pic %}
+                                    <img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%">
+                                {% else %}
+                                    <img src={{url_for('static', filename='anon.jpg')}} width="100%" height="100%">
+                                {% endif %}
 							{% elif private %}
-							<a href="/profile/{{message.msg_author}}"><img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%"></a>
+                                {% if message.user.user_pic %}
+                                    <a href="/profile/{{message.msg_author}}"><img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%"></a>
+                                {% else %}
+                                    <a href="/profile/{{message.msg_author}}"><img src={{url_for('static', filename='anon.jpg')}} width="100%" height="100%"></a>
+                                {% endif %}
 							{% else %}
-							<a href="/messages/{{message.msg_author}}"><img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%"></a>
+                                {% if message.user.user_pic %}
+                                    <a href="/messages/{{message.msg_author}}"><img src="{{url_for('thumbnails', filename=message.user.user_pic)}}" width="100%"></a>
+                                {% else %}
+                                    <a href="/messages/{{message.msg_author}}"><img src={{url_for('static', filename='anon.jpg')}} width="100%" height="100%"></a>
+                                {% endif %}
 							{% endif %}
 						</div>
 						<div style="margin 5px; margin-top: 7px">

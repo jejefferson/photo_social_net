@@ -1,15 +1,11 @@
-#!usr/bin/python
+#!/usr/bin/env python
 from app import app
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_debugtoolbar_lineprofilerpanel.profile import line_profile
-import logging
-from logging.handlers import RotatingFileHandler
+
 import os
 
 app.debug = True # for uwsgi
-handler = RotatingFileHandler('/home/je/flask.log', maxBytes=1000000, backupCount=1)
-handler.setLevel(logging.INFO)
-app.logger.addHandler(handler)
 os.environ['LANG'] = 'en_US.UTF-8'
 os.environ['LC_CTYPE'] = 'en_US.UTF-8'
 

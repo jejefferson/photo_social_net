@@ -61,7 +61,11 @@
 	</div>
 	<div style="position: relative; float:left;width: 40%; min-width: 200px;top: 0px;">
 		<div style="width: 30%; padding: 5px; margin: 20px; margin-left:35%; box-shadow: 0 0 20px rgba(64,5,42,6);" >
-			<a href="{{url_for('upload', filename=user.user_pic)}}"><img src="{{url_for('thumbnails', filename=user.user_pic)}}" width="100%" height="100%"></a>
+            {% if user.user_pic %}
+			    <a href="{{url_for('upload', filename=user.user_pic)}}"><img src="{{url_for('thumbnails', filename=user.user_pic)}}" width="100%" height="100%"></a>
+            {% else %}
+                <img src={{url_for('static', filename='anon.jpg')}} width="100%" height="100%">
+            {% endif %}
 		</div>
 		{% if nick %}
 		<a class="button-noblock" href="/messages/{{nick}}">{{_('Write message')}}</a>
@@ -118,7 +122,11 @@
 				{% endif %}
 				<div style="float: left; width: 30%; margin: 0px; text-align: center;">
 					<a href="/profile/{{friend.nickname}}">
-						<img style ="width: auto; height : auto; max-height: 80px; max-width: 100%;" src="{{url_for('thumbnails', filename=friend.user_pic)}}" width="30%">
+                        {% if userpic_path %}
+						    <img style ="width: auto; height : auto; max-height: 80px; max-width: 100%;" src="{{url_for('thumbnails', filename=friend.user_pic)}}" width="30%">
+                        {% else %}
+                            <img src={{url_for('static', filename='anon.jpg')}} width="100%" height="100%">
+                        {% endif %}
 					</a>
 					<p style="text-align: center;">{{friend.nickname}}</p>
 				</div>
@@ -142,7 +150,7 @@
 				{% if gallery.last_photo %}
 					<img style ="width: auto; height : auto; max-height: 80px; max-width: 100%;" src="{{url_for('thumbnails', filename=gallery.last_photo)}}" width="30%">
 				{% else %}
-					<img src="{{url_for('thumbnails', filename='no_such')}}" width="30%">
+					<img src="{{url_for('static', filename='no_such')}}" width="30%">
 				{% endif %}
 			</a>
 				</div>

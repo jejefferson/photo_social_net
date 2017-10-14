@@ -55,7 +55,7 @@
 				{% if gallery.last_photo %}
 					<img style ="width: auto; height : auto; max-height: 80px; max-width: 100%;" src="{{url_for('thumbnails', filename=gallery.last_photo)}}" width="30%">
 				{% else %}
-					<img src="{{url_for('thumbnails', filename='no_such')}}" width="30%">
+					<img src="{{url_for('static', filename='no_such')}}" width="30%">
 				{% endif %}
 			</a>
 		</div>

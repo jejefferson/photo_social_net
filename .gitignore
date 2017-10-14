@@ -1,1 +1,7 @@
-upload/
+*.pyc
+*.pio
+
+user_upload/*
+logs/*
+.idea/*
+
