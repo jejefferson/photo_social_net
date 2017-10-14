@@ -79,15 +79,27 @@ def add_all_attachments(message, uploaded_files, private=False):
                     utils.save_thumb(filename)
                     exif = get_exif(filename)
                 if isinstance(message, models.Message):
-                    message = message.add_file(models.UploadedFile(file_author=message.msg_author, filename=filename, \
-                                                                   access=access, exif=exif,
-                                                                   mimetype=message_file.content_type, \
-                                                                   upload_data=datetime.datetime.utcnow()))
+                    message = message.add_file(
+                        models.UploadedFile(
+                            file_author=message.msg_author,
+                            filename=filename,
+                            access=access,
+                            exif=exif,
+                            mimetype=message_file.content_type,
+                            upload_data=datetime.datetime.utcnow(),
+                            )
+                        )
                 elif isinstance(message, models.PhotoGallery):
-                    message = message.add_photo(models.UploadedFile(file_author=session.get('nickname'), filename=filename, \
-                                                                    access=access, exif=exif,
-                                                                    mimetype=message_file.content_type, \
-                                                                    upload_data=datetime.datetime.utcnow()))
+                    message = message.add_photo(
+                        models.UploadedFile(
+                            file_author=session.get('nickname'),
+                            filename=filename,
+                            access=access,
+                            exif=exif,
+                            mimetype=message_file.content_type,
+                            upload_data=datetime.datetime.utcnow()
+                        )
+                    )
             except Exception:
                 _remove_from_disk(filename)
                 flash(gettext('Error occurred during upload! Please retry later.'))

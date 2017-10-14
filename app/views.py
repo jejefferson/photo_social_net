@@ -843,6 +843,7 @@ def _delete_all_data_message(message):
                     _delfile(attachment.file_id)
             db.session.delete(comment)
     db.session.delete(message)
+    db.session.commit()
 
 
 @app.route('/delmessage/<int:id>', methods=['POST'])
@@ -1599,7 +1600,11 @@ def ajax_post_comment():
     if not comment:
         errors = get_flashed_messages()
         return jsonify({'error': errors})
-    html = render_template('comment.html', comment=comment, nick=nick, nickname=msg_author)
+    try:
+        html = render_template('comment.html', comment=comment, nick=nick, nickname=msg_author)
+    except Exception as exc:
+        _delete_all_data_message(comment)
+        return jsonify({'error': repr(exc)})
     return jsonify({'response': html})
 
 

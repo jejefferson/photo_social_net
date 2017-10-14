@@ -2,7 +2,11 @@
 <div class="comment {{'parent_' ~ comment.parent_id}}" id={{'comment_' ~ comment.msg_id}}>
 	{% with message_author_is_nickname = (comment.msg_author == nickname or comment.parent.msg_author == nickname) %}
 	<div style="float:left; width: 5%; margin: 5px; text-align: center; word-wrap: break-word;">
-		<a href="/profile/{{comment.msg_author}}"><img src="{{url_for('thumbnails', filename=comment.user.user_pic)}}" width="100%"></a>
+        {% if comment.user.user_pic %}
+            <a href="/profile/{{comment.msg_author}}"><img src="{{url_for('thumbnails', filename=comment.user.user_pic)}}" width="100%"></a>
+        {% else %}
+            <a href="/profile/{{comment.msg_author}}"><img src={{url_for('static', filename='anon.jpg')}} width="100%" height="100%"></a>
+        {% endif %}
 	</div>
 	<div style="margin 5px; margin-top: 7px">
 		<div style="float: left; width: 75%">
