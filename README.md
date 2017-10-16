@@ -13,14 +13,22 @@ Social network
 
 Используя docker:
 1) Установка mysql.
+    ```
     git pull mysql
     docker run --name mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=webportal -e MYSQL_USER=flask -e MYSQL_PASSWORD=difficult -d -p 3306:3306 -v /you/db/storage:/var/lib/mysql mysql --character-set-server=utf8 --collation-server=utf8_general_ci
     ./db_create
+    ```
+Известные проблемы MAC OS: wand может жаловаться на imagemagic, быстрофикс:
+    ```
+    brew install imagemagick@6
+    export MAGICK_HOME=/usr/local/opt/imagemagick@6
+    ```
 
 2) Деплоймент приложения.
+    ```
     docker build -t photo_social .
     docker run --name webapp -d -p80:80 -v ~/you/upload/storage:/app/user_upload photo_social
-
+    ```
 3) Готово! Nginx+uwsgi+flask ждут тебя на localhost:80
 
 Более подробное описание смотри в родительских образах:
