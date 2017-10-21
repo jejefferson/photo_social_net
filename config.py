@@ -4,7 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 #SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'app.db')
 DB_IP = os.environ.get('DB_IP') or '127.0.0.1'
-DP_PORT = os.environ.get('DB_PORT') or '3306'  # default for mysql
+DB_PORT = os.environ.get('DB_PORT') or '3306'  # default for mysql
 SQLALCHEMY_DATABASE_URI = f'mysql://flask:difficult@{DB_IP}:{DB_PORT}/webportal?charset=utf8&use_unicode=1'
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 PATH_LOG_FILE = './logs/webportal.log'

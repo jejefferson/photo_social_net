@@ -110,7 +110,7 @@ def add_all_attachments(message, uploaded_files, private=False):
 
 def add_message(msg_author, msg_dest, msg_type, msg_body, uploaded_files=None, group_id=None):
     if msg_type == 'blog' and msg_body:
-        tags, msg = utils.truncate_tags(msg_body)
+        tags, msg = utils.extract_tags(msg_body)
     else:
         tags = None
         msg = msg_body
