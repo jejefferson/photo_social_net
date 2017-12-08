@@ -2,12 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import os
-from app import app
+import re
+
+from typing import (
+    List,
+    Tuple,
+)
 
 try:
     import Image
 except:
     from PIL import Image
+
+from app import app
+
 
 IMAGES = ['image/png', 'image/jpeg', 'image/gif', 'image/bmp']
 
@@ -48,17 +56,8 @@ def save_thumb(filename):
     )
 
 
-def extract_tags(message):
-    if message:
-        message = message.strip()
-        if not message.startswith('#'):
-            return [], message
-        words = message.split(' ')
-        index = 0
-        for word in words:
-            if not word.startswith('#'):
-                index = message.find(word)
-                break  # capture only first entries
-        tags = filter(None, message[:index-1].split('#'))
-        text = message[index:]
-        return tags, text
+def extract_tags(message: str) -> Tuple[List[str], str]:
+    tags, text = re.match('^((?:#\w+\s)*)(.*)$', message).groups()
+    tags = tags.replace('#', '')
+    tags = tags.split()
+    return tags, text
