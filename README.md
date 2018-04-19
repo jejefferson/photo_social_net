@@ -12,10 +12,14 @@ Social network
 Установка:
 
 Используя docker:
-1) Установка mysql.
+1) Создаем сеть.
+    ```
+    docker network create photo_social_net
+    ```
+2) Установка mysql и запуск инстанса для приложения.
     ```
     docker pull mysql
-    docker run --name mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=webportal -e MYSQL_USER=flask -e MYSQL_PASSWORD=difficult -d -p 3306:3306 -v /you/db/storage:/var/lib/mysql mysql --character-set-server=utf8 --collation-server=utf8_general_ci
+    docker run --name mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=webportal -e MYSQL_USER=flask -e MYSQL_PASSWORD=difficult -d -p 3306:3306 --network=photo_social_net -v /your/db/storage:/var/lib/mysql mysql --character-set-server=utf8 --collation-server=utf8_general_ci
     ./db_create
     ```
 Известные проблемы MAC OS: wand может жаловаться на imagemagic, быстрофикс:
@@ -24,12 +28,12 @@ Social network
     export MAGICK_HOME=/usr/local/opt/imagemagick@6
     ```
 
-2) Деплоймент приложения.
+3) Деплоймент и запуск приложения.
     ```
     docker build -t photo_social .
-    docker run --name webapp -d -p80:80 -v ~/you/upload/storage:/app/user_upload photo_social
+    docker run --name webapp -d -p80:80 -e DB_IP=mysql --network=photo_social_net -v ~/your/upload/storage:/app/user_upload photo_social
     ```
-3) Готово! Nginx+uwsgi+flask ждут тебя на localhost:80
+Готово! Nginx+uwsgi+flask ждут тебя на localhost:80
 
 Более подробное описание смотри в родительских образах:
 1) https://github.com/tiangolo/uwsgi-nginx-flask-docker

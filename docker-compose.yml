@@ -1,0 +1,44 @@
+version: "3"
+services:
+
+  app:
+    image: photo_social:latest
+    volumes:
+      - ~/Downloads:/app/user_upload
+    environment:
+      - DB_IP=mysql
+    networks:
+      - photo_social_net
+    depends_on:
+      - db
+    ports:
+      - 0.0.0.0:80:80
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+        constraints: [node.labels.app == 1]
+
+  db:
+    image: mysql:latest
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_general_ci
+    volumes:
+      - /Users/v.shishmintsev/programming/volumes/mysql/webportal:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=my-secret-pw
+      - MYSQL_DATABASE=webportal
+      - MYSQL_USER=flask
+      - MYSQL_PASSWORD=difficult
+    networks:
+      - photo_social_net
+    deploy:
+      restart_policy:
+        condition: any
+      placement:
+          constraints: [node.labels.db == 1]
+
+networks:
+  photo_social_net:
+    driver: overlay
+    driver_opts:
+        com.docker.network.enable_ipv6: "false"
