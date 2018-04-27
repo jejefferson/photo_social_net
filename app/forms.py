@@ -1,14 +1,14 @@
 #/usr/bin/python
 #-*- coding: utf-8 -*-
-from flask.ext.wtf import Form
-from flask.ext.wtf.recaptcha import RecaptchaField
+from flask_wtf import Form
+from flask_wtf.recaptcha import RecaptchaField
 from wtforms import TextField, BooleanField, SubmitField, PasswordField, TextAreaField,\
 	StringField, FileField, SelectField, DateField
 from wtforms.validators import Required, Optional
 from wtforms.widgets import TextArea
 from wtforms.widgets.core import Select, HTMLString, html_params
 from datetime import datetime
-from flask.ext.babel import gettext
+from flask_babel import gettext
 from app import db, models
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 import os

@@ -31,3 +31,8 @@ sqlalchemy-migrate
 sqlparse
 uwsgidecorators
 flask-debugtoolbar-lineprofilerpanel
+flask_sqlalchemy
+flask_babel
+flask_wtf
+flask_script
+flask_migrate

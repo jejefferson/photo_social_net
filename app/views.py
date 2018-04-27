@@ -1,39 +1,73 @@
 # -*- coding: utf-8 -*-
-from app import app
-from app import core_api
-from app.exceptions import *
-import flask
-from flask import render_template, flash, redirect, session, request, url_for, send_from_directory, \
-    make_response, get_flashed_messages, g
-from app.retrieve2 import CacheRData
-from app.forms import LoginForm, RealLogin, PostForm, SignForm, SubmitForm, ProfileChange, SendMessage, UploadForm, \
-    PhotoGallery, Gallery, Photo, SearchForm, ImageSearchForm, SendComment, CreateGroup, GroupSendMessage, \
-    GroupEdit, list_countries  # todo replace list_countries
-from app import models, db, babel
+
+import os
 import datetime
+from functools import wraps
+import urllib
+
+from pytz import timezone
+import wand.image
+from dateutil.relativedelta import relativedelta
+
+import flask
+from flask import (
+    render_template,
+    flash,
+    redirect,
+    session,
+    request,
+    url_for,
+    send_from_directory,
+    make_response,
+    get_flashed_messages,
+    g,
+    jsonify,
+)
+
+from app import (
+    app,
+    core_api,
+    utils,
+    models,
+    db,
+    babel,
+)
+from app.exceptions import *
+
+
+from app.forms import (
+    RealLogin,
+    PostForm,
+    SignForm,
+    SubmitForm,
+    ProfileChange,
+    SendMessage,
+    UploadForm,
+    PhotoGallery,
+    Gallery,
+    Photo,
+    SearchForm,
+    ImageSearchForm,
+    SendComment,
+    CreateGroup,
+    GroupSendMessage,
+    GroupEdit,
+    list_countries,
+)
+
 from sqlalchemy import desc, or_
 from sqlalchemy.orm import eagerload, joinedload, subqueryload, aliased
 from werkzeug.utils import secure_filename
-import os
-from pytz import timezone
+from flask_babel import gettext, ngettext
+from werkzeug.routing import IntegerConverter as BaseIntConverter
+
 import itsdangerous
-from flask.ext.babel import gettext, ngettext
-import jinja2
 
 try:
     import Image
 except:
     from PIL import Image
-from PIL.ExifTags import TAGS
-from werkzeug import SharedDataMiddleware
-from werkzeug.routing import IntegerConverter as BaseIntConverter
-import wand.image
-from dateutil.relativedelta import relativedelta
-from flask import jsonify
-import urllib
-from functools import wraps
-import sys
-from app import utils
+
 
 try:
     from uwsgidecorators import timer
@@ -105,7 +139,6 @@ def get_locale():
 
 ONLINE_TABLE = {}
 ONLINE_SOCIAL_TABLE = {}
-crd = CacheRData()
 
 
 def allowed_file(filename, ext=[]):
@@ -154,15 +187,6 @@ def login_required(f):
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico',
                                mimetype='image/vnd.microsoft.icon')
-
-
-@app.route('/kino')
-def showAfisha():
-    timetable = crd.caching_retrieve()
-    last_req = crd.get_last_update()
-    films = timetable.keys()
-    return render_template('kino.html', films=films, times=timetable, \
-                           title='Megafilm', vs=timetable.values(), last_req=last_req, nickname=session.get('nickname'))
 
 
 @app.route('/reallogin', methods=['GET', 'POST'])
@@ -431,7 +455,7 @@ def usermodprofile():
         user_birthday = datetime.datetime.strptime(user_birthday, '%d.%m.%Y')
         userpic = form.user_pic.data
         gender = \
-        [(0, u'male'), (1, u'female'), (2, u'trans'), (3, u'cyberpunk'), (4, u'noselect')][form.user_gender.data][1]
+            [(0, u'male'), (1, u'female'), (2, u'trans'), (3, u'cyberpunk'), (4, u'noselect')][form.user_gender.data][1]
         country = list_countries[form.user_location_country.data][1]
         city = form.user_location_city.data
         general_info = form.user_general_info.data

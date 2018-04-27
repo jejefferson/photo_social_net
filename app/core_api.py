@@ -8,7 +8,7 @@ from flask import (
     flash,
 )
 
-from flask.ext.babel import gettext
+from flask_babel import gettext
 
 from app import app
 from app import db, models
