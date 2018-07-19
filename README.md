@@ -18,7 +18,7 @@ Social network
     ```
 2) Установка mysql и запуск инстанса для приложения.
     ```
-    docker pull mysql
+    docker pull mysql:5.7
     docker run --name mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -e MYSQL_DATABASE=webportal -e MYSQL_USER=flask -e MYSQL_PASSWORD=difficult -d -p 3306:3306 --network=photo_social_net -v /your/db/storage:/var/lib/mysql mysql --character-set-server=utf8 --collation-server=utf8_general_ci
     ./db_create
     ```
@@ -27,6 +27,10 @@ Social network
     brew install imagemagick@6
     export MAGICK_HOME=/usr/local/opt/imagemagick@6
     ```
+MySQL с версии 8.0 поменяли способ аутентификации и алхимия может кидать исключение:
+    ```Authentication plugin 'caching_sha2_password' cannot be loaded: dlopen(/usr/local/mysql/lib/plugin/caching_sha2_password.so, 2): image not found```
+Workaround - продолжать использовать mysql 5.7 (или не использовать mysql вообще, что лучше).
+
 
 3) Деплоймент и запуск приложения.
     ```

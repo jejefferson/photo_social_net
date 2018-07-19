@@ -51,7 +51,7 @@ def save_thumb(filename):
                 filename,
             )
         ),
-        'JPEG',
+        'PNG',  # jpeg is not possible due to having rgba in some cases
         quality=75,
     )
 

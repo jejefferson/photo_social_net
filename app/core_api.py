@@ -100,7 +100,8 @@ def add_all_attachments(message, uploaded_files, private=False):
                             upload_data=datetime.datetime.utcnow()
                         )
                     )
-            except Exception:
+            except Exception as exc:
+                app.logger.error("Error while saving to disk:", str(exc))
                 _remove_from_disk(filename)
                 flash(gettext('Error occurred during upload! Please retry later.'))
                 break
